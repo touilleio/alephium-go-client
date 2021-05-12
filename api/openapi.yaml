@@ -1,0 +1,3157 @@
+openapi: 3.0.3
+info:
+  title: Alephium API
+  version: "1.0"
+servers:
+- url: http://{host}:{port}
+  variables:
+    host:
+      default: localhost
+    port:
+      default: "12973"
+paths:
+  /wallets:
+    get:
+      operationId: getWallets
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - walletName: wallet-super-name
+                locked: true
+              schema:
+                items:
+                  $ref: '#/components/schemas/WalletStatus'
+                type: array
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: List available wallets
+      tags:
+      - Wallets
+    post:
+      description: 'A new wallet will be created and respond with a mnemonic. Make
+        sure to keep that mnemonic safely as it will allows you to recover your wallet.
+        Default mnemonic size is 24, (options: 12, 15, 18, 21, 24).'
+      operationId: postWallets
+      requestBody:
+        content:
+          application/json:
+            examples:
+              Example0:
+                summary: Default
+                value:
+                  password: my-secret-password
+              Example1:
+                summary: More settings
+                value:
+                  password: my-secret-password
+                  walletName: wallet-super-name
+                  isMiner: true
+                  mnemonicPassphrase: optional-mnemonic-passphrase
+                  mnemonicSize: 12
+            schema:
+              $ref: '#/components/schemas/WalletCreation'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                walletName: wallet-super-name
+                mnemonic: vault alarm sad mass witness property virus style good flower
+                  rice alpha viable evidence run glare pretty scout evil judge enroll
+                  refuse another lava
+              schema:
+                $ref: '#/components/schemas/Result'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Create a new wallet
+      tags:
+      - Wallets
+    put:
+      operationId: putWallets
+      requestBody:
+        content:
+          application/json:
+            example:
+              password: my-secret-password
+              mnemonic: vault alarm sad mass witness property virus style good flower
+                rice alpha viable evidence run glare pretty scout evil judge enroll
+                refuse another lava
+            schema:
+              $ref: '#/components/schemas/WalletRestore'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                walletName: wallet-super-name
+              schema:
+                $ref: '#/components/schemas/Result1'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Restore a wallet from your mnemonic
+      tags:
+      - Wallets
+  /wallets/{wallet_name}/lock:
+    post:
+      operationId: postWalletsWallet_nameLock
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200": {}
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Lock your wallet
+      tags:
+      - Wallets
+  /wallets/{wallet_name}/unlock:
+    post:
+      operationId: postWalletsWallet_nameUnlock
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            example:
+              password: my-secret-password
+            schema:
+              $ref: '#/components/schemas/WalletUnlock'
+        required: true
+      responses:
+        "200": {}
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Unlock your wallet
+      tags:
+      - Wallets
+  /wallets/{wallet_name}:
+    delete:
+      operationId: deleteWalletsWallet_name
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            example:
+              password: my-secret-password
+            schema:
+              $ref: '#/components/schemas/WalletDeletion'
+        required: true
+      responses:
+        "200": {}
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Delete your wallet file (can be recovered with your mnemonic)
+      tags:
+      - Wallets
+  /wallets/{wallet_name}/balances:
+    get:
+      operationId: getWalletsWallet_nameBalances
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                totalBalance: "1000000"
+                balances:
+                - address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+                  balance: "1000000"
+              schema:
+                $ref: '#/components/schemas/Balances'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get your total balance
+      tags:
+      - Wallets
+  /wallets/{wallet_name}/transfer:
+    post:
+      operationId: postWalletsWallet_nameTransfer
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            example:
+              address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+              amount: "1000000"
+            schema:
+              $ref: '#/components/schemas/Transfer'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                txId: 503bfb16230888af4924aa8f8250d7d348b862e267d75d3147f1998050b6da69
+                fromGroup: 2
+                toGroup: 1
+              schema:
+                $ref: '#/components/schemas/Result2'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Transfer ALF
+      tags:
+      - Wallets
+  /wallets/{wallet_name}/addresses:
+    get:
+      operationId: getWalletsWallet_nameAddresses
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                activeAddress: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+                addresses:
+                - M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+              schema:
+                $ref: '#/components/schemas/Addresses'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: List all your wallet's addresses
+      tags:
+      - Wallets
+  /wallets/{wallet_name}/miner-addresses:
+    get:
+      description: This endpoint can only be called if the wallet was created with
+        the `miner = true` flag
+      operationId: getWalletsWallet_nameMiner-addresses
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - addresses:
+                - address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+                  group: 2
+              schema:
+                items:
+                  $ref: '#/components/schemas/MinerAddressesInfo'
+                type: array
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: List all miner addresses per group
+      tags:
+      - Miners
+  /wallets/{wallet_name}/deriveNextAddress:
+    post:
+      description: Cannot be called from a miner wallet
+      operationId: postWalletsWallet_nameDerivenextaddress
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+              schema:
+                type: string
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Derive your next address
+      tags:
+      - Wallets
+  /wallets/{wallet_name}/deriveNextMinerAddresses:
+    post:
+      description: Your wallet need to have been created with the miner flag set to
+        true
+      operationId: postWalletsWallet_nameDerivenextmineraddresses
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+                group: 2
+              schema:
+                items:
+                  $ref: '#/components/schemas/AddressInfo'
+                type: array
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Derive your next miner addresses for each group
+      tags:
+      - Miners
+  /wallets/{wallet_name}/changeActiveAddress:
+    post:
+      operationId: postWalletsWallet_nameChangeactiveaddress
+      parameters:
+      - explode: false
+        in: path
+        name: wallet_name
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            example:
+              address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+            schema:
+              $ref: '#/components/schemas/ChangeActiveAddress'
+        required: true
+      responses:
+        "200": {}
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Choose the active address
+      tags:
+      - Wallets
+  /infos/self-clique:
+    get:
+      operationId: getInfosSelf-clique
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                cliqueId: d1b70d2226308b46da297486adb6b4f1a8c1842cb159ac5ec04f384fe2d6f5da28
+                networkType: mainnet
+                numZerosAtLeastInHash: 18
+                nodes:
+                - address: 1.2.3.4
+                  restPort: 12377
+                  wsPort: 12366
+                synced: true
+                groupNumPerBroker: 1
+                groups: 2
+              schema:
+                $ref: '#/components/schemas/SelfClique'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get info about your own clique
+      tags:
+      - Infos
+  /infos/inter-clique-peer-info:
+    get:
+      operationId: getInfosInter-clique-peer-info
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - cliqueId: d1b70d2226308b46da297486adb6b4f1a8c1842cb159ac5ec04f384fe2d6f5da28
+                brokerId: 1
+                groupNumPerBroker: 1
+                address:
+                  addr: 1.2.3.4
+                  port: 12344
+                isSynced: true
+              schema:
+                items:
+                  $ref: '#/components/schemas/InterCliquePeerInfo'
+                type: array
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get infos about the inter cliques
+      tags:
+      - Infos
+  /infos/discovered-neighbors:
+    get:
+      operationId: getInfosDiscovered-neighbors
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - cliqueId: d1b70d2226308b46da297486adb6b4f1a8c1842cb159ac5ec04f384fe2d6f5da28
+                brokerId: 1
+                groupNumPerBroker: 1
+                address:
+                  addr: 1.2.3.4
+                  port: 12344
+              schema:
+                items:
+                  $ref: '#/components/schemas/BrokerInfo'
+                type: array
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get discovered neighbors
+      tags:
+      - Infos
+  /infos/misbehaviors:
+    get:
+      operationId: getInfosMisbehaviors
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - peer: 1.2.3.4
+                status:
+                  type: penalty
+                  value: 42
+              schema:
+                items:
+                  $ref: '#/components/schemas/PeerMisbehavior'
+                type: array
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get the misbehaviors of peers
+      tags:
+      - Infos
+  /blockflow:
+    get:
+      operationId: getBlockflow
+      parameters:
+      - explode: true
+        in: query
+        name: fromTs
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: toTs
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                blocks:
+                - hash: bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                  timestamp: 1611041396892
+                  chainFrom: 1
+                  chainTo: 2
+                  height: 42
+                  deps:
+                  - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                  - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                  transactions:
+                  - id: 503bfb16230888af4924aa8f8250d7d348b862e267d75d3147f1998050b6da69
+                    inputs:
+                    - outputRef:
+                        scriptHint: 23412
+                        key: 798e9e137aec7c2d59d9655b4ffa640f301f628bf7c365083bb255f6aa5f89ef
+                      unlockScript: 00d1b70d2226308b46da297486adb6b4f1a8c1842cb159ac5ec04f384fe2d6f5da28
+                    outputs:
+                    - amount: "1000000000000000000"
+                      address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+                      lockTime: 1611041396892
+              schema:
+                $ref: '#/components/schemas/FetchResponse'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: List blocks on the given time interval
+      tags:
+      - Blockflow
+  /blockflow/blocks/{block_hash}:
+    get:
+      operationId: getBlockflowBlocksBlock_hash
+      parameters:
+      - explode: false
+        in: path
+        name: block_hash
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                hash: bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                timestamp: 1611041396892
+                chainFrom: 1
+                chainTo: 2
+                height: 42
+                deps:
+                - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                transactions:
+                - id: 503bfb16230888af4924aa8f8250d7d348b862e267d75d3147f1998050b6da69
+                  inputs:
+                  - outputRef:
+                      scriptHint: 23412
+                      key: 798e9e137aec7c2d59d9655b4ffa640f301f628bf7c365083bb255f6aa5f89ef
+                    unlockScript: 00d1b70d2226308b46da297486adb6b4f1a8c1842cb159ac5ec04f384fe2d6f5da28
+                  outputs:
+                  - amount: "1000000000000000000"
+                    address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+                    lockTime: 1611041396892
+              schema:
+                $ref: '#/components/schemas/BlockEntry'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get a block with hash
+      tags:
+      - Blockflow
+  /addresses/{address}/balance:
+    get:
+      operationId: getAddressesAddressBalance
+      parameters:
+      - explode: false
+        in: path
+        name: address
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                balance: "1000000000000000000"
+                lockedBalance: "500000000000000000"
+                utxoNum: 3
+              schema:
+                $ref: '#/components/schemas/Balance'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get the balance of a address
+      tags:
+      - Addresses
+  /addresses/{address}/group:
+    get:
+      operationId: getAddressesAddressGroup
+      parameters:
+      - explode: false
+        in: path
+        name: address
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                group: 2
+              schema:
+                $ref: '#/components/schemas/Group'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get the group of a address
+      tags:
+      - Addresses
+  /blockflow/hashes:
+    get:
+      operationId: getBlockflowHashes
+      parameters:
+      - explode: true
+        in: query
+        name: fromGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: toGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: height
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                headers:
+                - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+              schema:
+                $ref: '#/components/schemas/HashesAtHeight'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get all block's hashes at given height for given groups
+      tags:
+      - Blockflow
+  /blockflow/chains:
+    get:
+      operationId: getBlockflowChains
+      parameters:
+      - explode: true
+        in: query
+        name: fromGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: toGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                currentHeight: 42
+              schema:
+                $ref: '#/components/schemas/ChainInfo'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get infos about the chain from the given groups
+      tags:
+      - Blockflow
+  /transactions/unconfirmed:
+    get:
+      operationId: getTransactionsUnconfirmed
+      parameters:
+      - explode: true
+        in: query
+        name: fromGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: toGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - id: 503bfb16230888af4924aa8f8250d7d348b862e267d75d3147f1998050b6da69
+                inputs:
+                - outputRef:
+                    scriptHint: 23412
+                    key: 798e9e137aec7c2d59d9655b4ffa640f301f628bf7c365083bb255f6aa5f89ef
+                  unlockScript: 00d1b70d2226308b46da297486adb6b4f1a8c1842cb159ac5ec04f384fe2d6f5da28
+                outputs:
+                - amount: "1000000000000000000"
+                  address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+                  lockTime: 1611041396892
+              schema:
+                items:
+                  $ref: '#/components/schemas/Tx'
+                type: array
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: List unconfirmed transactions
+      tags:
+      - Transactions
+  /transactions/build:
+    get:
+      operationId: getTransactionsBuild
+      parameters:
+      - explode: true
+        in: query
+        name: fromKey
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: toAddress
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: lockTime
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: value
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                unsignedTx: 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+                txId: 798e9e137aec7c2d59d9655b4ffa640f301f628bf7c365083bb255f6aa5f89ef
+                fromGroup: 2
+                toGroup: 1
+              schema:
+                $ref: '#/components/schemas/BuildTransactionResult'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Build an unsigned transaction
+      tags:
+      - Transactions
+  /transactions/send:
+    post:
+      operationId: postTransactionsSend
+      requestBody:
+        content:
+          application/json:
+            example:
+              unsignedTx: 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+              signature: 9e1a35b2931bd04e6780d01c36e3e5337941aa80f173cfe4f4e249c44ab135272b834c1a639db9c89d673a8a30524042b0469672ca845458a5a0cf2cad53221b
+            schema:
+              $ref: '#/components/schemas/SendTransaction'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                txId: 503bfb16230888af4924aa8f8250d7d348b862e267d75d3147f1998050b6da69
+                fromGroup: 2
+                toGroup: 1
+              schema:
+                $ref: '#/components/schemas/TxResult'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Send a signed transaction
+      tags:
+      - Transactions
+  /transactions/status:
+    get:
+      operationId: getTransactionsStatus
+      parameters:
+      - explode: true
+        in: query
+        name: txId
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: fromGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: toGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                Example0:
+                  value:
+                    type: confirmed
+                    blockHash: bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                    blockIndex: 0
+                    chainConfirmations: 1
+                    fromGroupConfirmations: 2
+                    toGroupConfirmations: 3
+                Example1:
+                  summary: Tx is still in mempool
+                  value:
+                    type: mem-pooled
+                Example2:
+                  summary: Cannot find tx with the id
+                  value:
+                    type: not-found
+              schema:
+                $ref: '#/components/schemas/TxStatus'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get tx status
+      tags:
+      - Transactions
+  /contracts/send:
+    post:
+      operationId: postContractsSend
+      requestBody:
+        content:
+          application/json:
+            example:
+              code: 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+              tx: 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+              signature: 9e1a35b2931bd04e6780d01c36e3e5337941aa80f173cfe4f4e249c44ab135272b834c1a639db9c89d673a8a30524042b0469672ca845458a5a0cf2cad53221b
+              fromGroup: 2
+            schema:
+              $ref: '#/components/schemas/SendContract'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                txId: 503bfb16230888af4924aa8f8250d7d348b862e267d75d3147f1998050b6da69
+                fromGroup: 2
+                toGroup: 1
+              schema:
+                $ref: '#/components/schemas/TxResult'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Send a signed smart contract
+      tags:
+      - Contracts
+  /contracts/compile:
+    post:
+      operationId: postContractsCompile
+      requestBody:
+        content:
+          application/json:
+            example:
+              address: M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+              type: contract
+              code: |-
+                TxContract Foo(bar: ByteVec) {
+                pub payable fn baz(amount: U256) -> () {
+                issueToken!(amount)
+                }}
+              state: '#0ef875c5a01c48ec4c0332b1036cdbfabca2d71622b67c29ee32c0dce74f2dc7'
+            schema:
+              $ref: '#/components/schemas/Compile'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                code: 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+              schema:
+                $ref: '#/components/schemas/CompileResult'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Compile a smart contract
+      tags:
+      - Contracts
+  /contracts/build:
+    post:
+      operationId: postContractsBuild
+      requestBody:
+        content:
+          application/json:
+            example:
+              fromKey: d1b70d2226308b46da297486adb6b4f1a8c1842cb159ac5ec04f384fe2d6f5da28
+              code: 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+            schema:
+              $ref: '#/components/schemas/BuildContract'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                unsignedTx: 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+                hash: 798e9e137aec7c2d59d9655b4ffa640f301f628bf7c365083bb255f6aa5f89ef
+                fromGroup: 2
+                toGroup: 1
+              schema:
+                $ref: '#/components/schemas/BuildContractResult'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Build an unsigned contract
+      tags:
+      - Contracts
+  /miners:
+    post:
+      operationId: postMiners
+      parameters:
+      - examples:
+          Start mining:
+            value: start-mining
+          Stop mining:
+            value: stop-mining
+        explode: true
+        in: query
+        name: action
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example: true
+              schema:
+                type: boolean
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Execute an action on miners
+      tags:
+      - Miners
+  /miners/addresses:
+    get:
+      operationId: getMinersAddresses
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                addresses:
+                - M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+              schema:
+                $ref: '#/components/schemas/MinerAddresses'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: List miner's addresses
+      tags:
+      - Miners
+    put:
+      operationId: putMinersAddresses
+      requestBody:
+        content:
+          application/json:
+            example:
+              addresses:
+              - M1AujpupFP4KWeZvqA7itsHY9cLJmx4qTzojVZrg8W9y9n
+            schema:
+              $ref: '#/components/schemas/MinerAddresses'
+        required: true
+      responses:
+        "200": {}
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Update miner's addresses
+      tags:
+      - Miners
+  /miners/block-candidate:
+    get:
+      operationId: getMinersBlock-candidate
+      parameters:
+      - explode: true
+        in: query
+        name: fromGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: toGroup
+        required: true
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                deps:
+                - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+                target: 1a400000
+                blockTs: 1611041396892
+                txsHash: 798e9e137aec7c2d59d9655b4ffa640f301f628bf7c365083bb255f6aa5f89ef
+                transactions:
+                - 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+              schema:
+                $ref: '#/components/schemas/BlockCandidate'
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Get the next block candidate for a chain
+      tags:
+      - Miners
+  /miners/new-block:
+    post:
+      operationId: postMinersNew-block
+      requestBody:
+        content:
+          application/json:
+            example:
+              blockDeps:
+              - bdaf9dc514ce7d34b6474b8ca10a3dfb93ba997cb9d5ff1ea724ebe2af48abe5
+              timestamp: 1611041396892
+              fromGroup: 1
+              toGroup: 2
+              miningCount: "2"
+              target: 1a400000
+              nonce: "2"
+              txsHash: 798e9e137aec7c2d59d9655b4ffa640f301f628bf7c365083bb255f6aa5f89ef
+              transactions:
+              - 0ecd20654c2e2be708495853e8da35c664247040c00bd10b9b13
+            schema:
+              $ref: '#/components/schemas/BlockSolution'
+        required: true
+      responses:
+        "200": {}
+        "400":
+          content:
+            application/json:
+              example:
+                detail: Something bad in the request
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: BadRequest
+        "500":
+          content:
+            application/json:
+              example:
+                detail: Ouch
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+          description: InternalServerError
+        "404":
+          content:
+            application/json:
+              example:
+                resource: wallet-name
+                detail: wallet-name not found
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: NotFound
+        "503":
+          content:
+            application/json:
+              example:
+                detail: Self clique unsynced
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+          description: ServiceUnavailable
+        "401":
+          content:
+            application/json:
+              example:
+                detail: You shall not pass
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+          description: Unauthorized
+      summary: Post a block solution
+      tags:
+      - Miners
+components:
+  schemas:
+    WalletCreation:
+      example:
+        password: password
+        walletName: walletName
+        mnemonicPassphrase: mnemonicPassphrase
+        isMiner: true
+        mnemonicSize: 0
+      properties:
+        password:
+          type: string
+        walletName:
+          type: string
+        isMiner:
+          type: boolean
+        mnemonicPassphrase:
+          type: string
+        mnemonicSize:
+          type: integer
+      required:
+      - password
+      type: object
+    BadRequest:
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+      type: object
+    NotFound:
+      properties:
+        detail:
+          type: string
+        resource:
+          type: integer
+      required:
+      - detail
+      - resource
+      type: object
+    Unauthorized:
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+      type: object
+    Result:
+      example:
+        walletName: walletName
+        mnemonic: mnemonic
+      properties:
+        walletName:
+          type: string
+        mnemonic:
+          type: string
+      required:
+      - mnemonic
+      - walletName
+      type: object
+    WalletRestore:
+      example:
+        password: password
+        walletName: walletName
+        mnemonicPassphrase: mnemonicPassphrase
+        mnemonic: mnemonic
+        isMiner: true
+      properties:
+        password:
+          type: string
+        mnemonic:
+          type: string
+        isMiner:
+          type: boolean
+        walletName:
+          type: string
+        mnemonicPassphrase:
+          type: string
+      required:
+      - mnemonic
+      - password
+      type: object
+    Result1:
+      example:
+        walletName: walletName
+      properties:
+        walletName:
+          type: string
+      required:
+      - walletName
+      type: object
+    WalletStatus:
+      example:
+        walletName: walletName
+        locked: true
+      properties:
+        walletName:
+          type: string
+        locked:
+          type: boolean
+      required:
+      - locked
+      - walletName
+      type: object
+    WalletUnlock:
+      example:
+        password: password
+      properties:
+        password:
+          type: string
+      required:
+      - password
+      type: object
+    WalletDeletion:
+      example:
+        password: password
+      properties:
+        password:
+          type: string
+      required:
+      - password
+      type: object
+    Balances:
+      example:
+        balances:
+        - address: address
+          balance: 6
+        - address: address
+          balance: 6
+        totalBalance: 0
+      properties:
+        totalBalance:
+          format: uint256
+          type: integer
+        balances:
+          items:
+            $ref: '#/components/schemas/AddressBalance'
+          type: array
+      required:
+      - totalBalance
+      type: object
+    AddressBalance:
+      example:
+        address: address
+        balance: 6
+      properties:
+        address:
+          type: string
+        balance:
+          format: uint256
+          type: integer
+      required:
+      - address
+      - balance
+      type: object
+    Transfer:
+      example:
+        amount: 0
+        address: address
+      properties:
+        address:
+          type: string
+        amount:
+          format: uint256
+          type: integer
+      required:
+      - address
+      - amount
+      type: object
+    Result2:
+      example:
+        txId: txId
+        fromGroup: 0
+        toGroup: 6
+      properties:
+        txId:
+          type: string
+        fromGroup:
+          type: integer
+        toGroup:
+          type: integer
+      required:
+      - fromGroup
+      - toGroup
+      - txId
+      type: object
+    Addresses:
+      example:
+        addresses:
+        - addresses
+        - addresses
+        activeAddress: activeAddress
+      properties:
+        activeAddress:
+          type: string
+        addresses:
+          items:
+            type: string
+          type: array
+      required:
+      - activeAddress
+      type: object
+    MinerAddressesInfo:
+      example:
+        addresses:
+        - address: address
+          group: 0
+        - address: address
+          group: 0
+      properties:
+        addresses:
+          items:
+            $ref: '#/components/schemas/AddressInfo'
+          type: array
+      type: object
+    AddressInfo:
+      example:
+        address: address
+        group: 0
+      properties:
+        address:
+          type: string
+        group:
+          type: integer
+      required:
+      - address
+      - group
+      type: object
+    ChangeActiveAddress:
+      example:
+        address: address
+      properties:
+        address:
+          type: string
+      required:
+      - address
+      type: object
+    InternalServerError:
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+      type: object
+    ServiceUnavailable:
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+      type: object
+    SelfClique:
+      example:
+        nodes:
+        - address: address
+          restPort: 6
+          wsPort: 1
+        - address: address
+          restPort: 6
+          wsPort: 1
+        synced: true
+        numZerosAtLeastInHash: 0
+        groups: 5
+        groupNumPerBroker: 5
+        cliqueId: cliqueId
+      properties:
+        cliqueId:
+          type: string
+        networkType:
+          $ref: '#/components/schemas/NetworkType'
+        numZerosAtLeastInHash:
+          type: integer
+        nodes:
+          items:
+            $ref: '#/components/schemas/PeerAddress'
+          type: array
+        synced:
+          type: boolean
+        groupNumPerBroker:
+          type: integer
+        groups:
+          type: integer
+      required:
+      - cliqueId
+      - groupNumPerBroker
+      - groups
+      - networkType
+      - numZerosAtLeastInHash
+      - synced
+      type: object
+    NetworkType:
+      oneOf:
+      - $ref: '#/components/schemas/Devnet'
+      - $ref: '#/components/schemas/Mainnet'
+      - $ref: '#/components/schemas/Testnet'
+    Devnet:
+      type: object
+    Mainnet:
+      type: object
+    Testnet:
+      type: object
+    PeerAddress:
+      example:
+        address: address
+        restPort: 6
+        wsPort: 1
+      properties:
+        address:
+          type: string
+        restPort:
+          type: integer
+        wsPort:
+          type: integer
+      required:
+      - address
+      - restPort
+      - wsPort
+      type: object
+    InterCliquePeerInfo:
+      example:
+        brokerId: 0
+        isSynced: true
+        address: address
+        groupNumPerBroker: 6
+        cliqueId: cliqueId
+      properties:
+        cliqueId:
+          type: string
+        brokerId:
+          type: integer
+        groupNumPerBroker:
+          type: integer
+        address:
+          type: string
+        isSynced:
+          type: boolean
+      required:
+      - address
+      - brokerId
+      - cliqueId
+      - groupNumPerBroker
+      - isSynced
+      type: object
+    BrokerInfo:
+      example:
+        brokerId: 0
+        address: address
+        groupNumPerBroker: 6
+        cliqueId: cliqueId
+      properties:
+        cliqueId:
+          type: string
+        brokerId:
+          type: integer
+        groupNumPerBroker:
+          type: integer
+        address:
+          type: string
+      required:
+      - address
+      - brokerId
+      - cliqueId
+      - groupNumPerBroker
+      type: object
+    PeerMisbehavior:
+      example:
+        peer: peer
+      properties:
+        peer:
+          type: string
+        status:
+          $ref: '#/components/schemas/PeerStatus'
+      required:
+      - peer
+      - status
+      type: object
+    PeerStatus:
+      oneOf:
+      - $ref: '#/components/schemas/Banned'
+      - $ref: '#/components/schemas/Penalty'
+    Banned:
+      properties:
+        until:
+          type: integer
+      required:
+      - until
+      type: object
+    Penalty:
+      properties:
+        value:
+          type: integer
+      required:
+      - value
+      type: object
+    FetchResponse:
+      example:
+        blocks:
+        - chainFrom: 6
+          chainTo: 1
+          deps:
+          - deps
+          - deps
+          transactions:
+          - outputs:
+            - amount: 2
+              address: address
+              lockTime: 7
+            - amount: 2
+              address: address
+              lockTime: 7
+            inputs:
+            - unlockScript: unlockScript
+              outputRef:
+                scriptHint: 5
+                key: key
+            - unlockScript: unlockScript
+              outputRef:
+                scriptHint: 5
+                key: key
+            id: id
+          - outputs:
+            - amount: 2
+              address: address
+              lockTime: 7
+            - amount: 2
+              address: address
+              lockTime: 7
+            inputs:
+            - unlockScript: unlockScript
+              outputRef:
+                scriptHint: 5
+                key: key
+            - unlockScript: unlockScript
+              outputRef:
+                scriptHint: 5
+                key: key
+            id: id
+          hash: hash
+          timestamp: 0
+          height: 5
+        - chainFrom: 6
+          chainTo: 1
+          deps:
+          - deps
+          - deps
+          transactions:
+          - outputs:
+            - amount: 2
+              address: address
+              lockTime: 7
+            - amount: 2
+              address: address
+              lockTime: 7
+            inputs:
+            - unlockScript: unlockScript
+              outputRef:
+                scriptHint: 5
+                key: key
+            - unlockScript: unlockScript
+              outputRef:
+                scriptHint: 5
+                key: key
+            id: id
+          - outputs:
+            - amount: 2
+              address: address
+              lockTime: 7
+            - amount: 2
+              address: address
+              lockTime: 7
+            inputs:
+            - unlockScript: unlockScript
+              outputRef:
+                scriptHint: 5
+                key: key
+            - unlockScript: unlockScript
+              outputRef:
+                scriptHint: 5
+                key: key
+            id: id
+          hash: hash
+          timestamp: 0
+          height: 5
+      properties:
+        blocks:
+          items:
+            $ref: '#/components/schemas/BlockEntry'
+          type: array
+      type: object
+    BlockEntry:
+      example:
+        chainFrom: 6
+        chainTo: 1
+        deps:
+        - deps
+        - deps
+        transactions:
+        - outputs:
+          - amount: 2
+            address: address
+            lockTime: 7
+          - amount: 2
+            address: address
+            lockTime: 7
+          inputs:
+          - unlockScript: unlockScript
+            outputRef:
+              scriptHint: 5
+              key: key
+          - unlockScript: unlockScript
+            outputRef:
+              scriptHint: 5
+              key: key
+          id: id
+        - outputs:
+          - amount: 2
+            address: address
+            lockTime: 7
+          - amount: 2
+            address: address
+            lockTime: 7
+          inputs:
+          - unlockScript: unlockScript
+            outputRef:
+              scriptHint: 5
+              key: key
+          - unlockScript: unlockScript
+            outputRef:
+              scriptHint: 5
+              key: key
+          id: id
+        hash: hash
+        timestamp: 0
+        height: 5
+      properties:
+        hash:
+          type: string
+        timestamp:
+          type: integer
+        chainFrom:
+          type: integer
+        chainTo:
+          type: integer
+        height:
+          type: integer
+        deps:
+          items:
+            type: string
+          type: array
+        transactions:
+          items:
+            $ref: '#/components/schemas/Tx'
+          type: array
+      required:
+      - chainFrom
+      - chainTo
+      - hash
+      - height
+      - timestamp
+      type: object
+    Tx:
+      example:
+        outputs:
+        - amount: 2
+          address: address
+          lockTime: 7
+        - amount: 2
+          address: address
+          lockTime: 7
+        inputs:
+        - unlockScript: unlockScript
+          outputRef:
+            scriptHint: 5
+            key: key
+        - unlockScript: unlockScript
+          outputRef:
+            scriptHint: 5
+            key: key
+        id: id
+      properties:
+        id:
+          type: string
+        inputs:
+          items:
+            $ref: '#/components/schemas/Input'
+          type: array
+        outputs:
+          items:
+            $ref: '#/components/schemas/Output'
+          type: array
+      required:
+      - id
+      type: object
+    Input:
+      example:
+        unlockScript: unlockScript
+        outputRef:
+          scriptHint: 5
+          key: key
+      properties:
+        outputRef:
+          $ref: '#/components/schemas/OutputRef'
+        unlockScript:
+          type: string
+      required:
+      - outputRef
+      type: object
+    OutputRef:
+      example:
+        scriptHint: 5
+        key: key
+      properties:
+        scriptHint:
+          type: integer
+        key:
+          type: string
+      required:
+      - key
+      - scriptHint
+      type: object
+    Output:
+      example:
+        amount: 2
+        address: address
+        lockTime: 7
+      properties:
+        amount:
+          format: uint256
+          type: integer
+        address:
+          type: string
+        lockTime:
+          type: integer
+      required:
+      - address
+      - amount
+      type: object
+    Balance:
+      example:
+        balance: 0
+        lockedBalance: 6
+        utxoNum: 1
+      properties:
+        balance:
+          format: uint256
+          type: integer
+        lockedBalance:
+          format: uint256
+          type: integer
+        utxoNum:
+          type: integer
+      required:
+      - balance
+      - lockedBalance
+      - utxoNum
+      type: object
+    Group:
+      example:
+        group: 0
+      properties:
+        group:
+          type: integer
+      required:
+      - group
+      type: object
+    HashesAtHeight:
+      example:
+        headers:
+        - headers
+        - headers
+      properties:
+        headers:
+          items:
+            type: string
+          type: array
+      type: object
+    ChainInfo:
+      example:
+        currentHeight: 0
+      properties:
+        currentHeight:
+          type: integer
+      required:
+      - currentHeight
+      type: object
+    BuildTransactionResult:
+      example:
+        unsignedTx: unsignedTx
+        txId: txId
+        fromGroup: 0
+        toGroup: 6
+      properties:
+        unsignedTx:
+          type: string
+        txId:
+          type: string
+        fromGroup:
+          type: integer
+        toGroup:
+          type: integer
+      required:
+      - fromGroup
+      - toGroup
+      - txId
+      - unsignedTx
+      type: object
+    SendTransaction:
+      example:
+        signature: signature
+        unsignedTx: unsignedTx
+      properties:
+        unsignedTx:
+          type: string
+        signature:
+          type: string
+      required:
+      - signature
+      - unsignedTx
+      type: object
+    TxResult:
+      example:
+        txId: txId
+        fromGroup: 0
+        toGroup: 6
+      properties:
+        txId:
+          type: string
+        fromGroup:
+          type: integer
+        toGroup:
+          type: integer
+      required:
+      - fromGroup
+      - toGroup
+      - txId
+      type: object
+    TxStatus:
+      oneOf:
+      - $ref: '#/components/schemas/Confirmed'
+      - $ref: '#/components/schemas/MemPooled'
+      - $ref: '#/components/schemas/NotFound1'
+    Confirmed:
+      properties:
+        blockHash:
+          type: string
+        blockIndex:
+          type: integer
+        chainConfirmations:
+          type: integer
+        fromGroupConfirmations:
+          type: integer
+        toGroupConfirmations:
+          type: integer
+      required:
+      - blockHash
+      - blockIndex
+      - chainConfirmations
+      - fromGroupConfirmations
+      - toGroupConfirmations
+      type: object
+    MemPooled:
+      type: object
+    NotFound1:
+      type: object
+    SendContract:
+      example:
+        code: code
+        tx: tx
+        signature: signature
+        fromGroup: 0
+      properties:
+        code:
+          type: string
+        tx:
+          type: string
+        signature:
+          type: string
+        fromGroup:
+          type: integer
+      required:
+      - code
+      - fromGroup
+      - signature
+      - tx
+      type: object
+    Compile:
+      example:
+        address: address
+        code: code
+        state: state
+        type: type
+      properties:
+        address:
+          type: string
+        type:
+          type: string
+        code:
+          type: string
+        state:
+          type: string
+      required:
+      - address
+      - code
+      - type
+      type: object
+    CompileResult:
+      example:
+        code: code
+      properties:
+        code:
+          type: string
+      required:
+      - code
+      type: object
+    BuildContract:
+      example:
+        code: code
+        fromKey: fromKey
+      properties:
+        fromKey:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - fromKey
+      type: object
+    BuildContractResult:
+      example:
+        unsignedTx: unsignedTx
+        fromGroup: 0
+        hash: hash
+        toGroup: 6
+      properties:
+        unsignedTx:
+          type: string
+        hash:
+          type: string
+        fromGroup:
+          type: integer
+        toGroup:
+          type: integer
+      required:
+      - fromGroup
+      - hash
+      - toGroup
+      - unsignedTx
+      type: object
+    MinerAddresses:
+      example:
+        addresses:
+        - addresses
+        - addresses
+      properties:
+        addresses:
+          items:
+            type: string
+          type: array
+      type: object
+    BlockCandidate:
+      example:
+        txsHash: txsHash
+        blockTs: 0
+        deps:
+        - deps
+        - deps
+        transactions:
+        - transactions
+        - transactions
+        target: target
+      properties:
+        deps:
+          items:
+            type: string
+          type: array
+        target:
+          type: string
+        blockTs:
+          type: integer
+        txsHash:
+          type: string
+        transactions:
+          items:
+            type: string
+          type: array
+      required:
+      - blockTs
+      - target
+      - txsHash
+      type: object
+    BlockSolution:
+      example:
+        txsHash: txsHash
+        blockDeps:
+        - blockDeps
+        - blockDeps
+        miningCount: 5
+        fromGroup: 6
+        transactions:
+        - transactions
+        - transactions
+        nonce: 5
+        toGroup: 1
+        timestamp: 0
+        target: target
+      properties:
+        blockDeps:
+          items:
+            type: string
+          type: array
+        timestamp:
+          type: integer
+        fromGroup:
+          type: integer
+        toGroup:
+          type: integer
+        miningCount:
+          format: uint256
+          type: integer
+        target:
+          type: string
+        nonce:
+          format: uint256
+          type: integer
+        txsHash:
+          type: string
+        transactions:
+          items:
+            type: string
+          type: array
+      required:
+      - fromGroup
+      - miningCount
+      - nonce
+      - target
+      - timestamp
+      - toGroup
+      - txsHash
+      type: object
