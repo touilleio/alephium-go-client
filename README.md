@@ -20,6 +20,9 @@ alephiumClient, err := alephium.New("http://localhost:12973", logrus.StandardLog
 // Create a miner wallet
 minerWallet, err := alephiumClient.CreateWallet("", "walletPassword", true, "")
 
+// Get the addresses of the freshly created miner wallet
+walletAddresses, err := alephiumClient.GetWalletAddresses(minerWallet.Name)
+
 // Update miner wallet on the node (hint: you can set this in the config,
 // see https://github.com/alephium/alephium/wiki/Miner-Guide for more details)
 err = alephiumClient.UpdateMinersAddresses(walletAddresses.Addresses)
