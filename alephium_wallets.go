@@ -1,9 +1,5 @@
 package alephium
 
-import (
-	"fmt"
-)
-
 // GetWallets
 func (a *AlephiumClient) GetWallets() ([]WalletInfo, error) {
 	var wallets []WalletInfo
@@ -61,6 +57,16 @@ func (a *AlephiumClient) RestoreWallet(password string, mnemonic string) (Wallet
 	return wallet, relevantError(err, errorDetail)
 }
 
+// GetWalletStatus
+func (a *AlephiumClient) GetWalletStatus(walletName string) (WalletInfo, error) {
+	var walletInfo WalletInfo
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("wallets/"+walletName).
+		Receive(&walletInfo, &errorDetail)
+
+	return walletInfo, relevantError(err, errorDetail)
+}
+
 // LockWallet
 func (a *AlephiumClient) LockWallet(walletName string) (bool, error) {
 
@@ -71,14 +77,14 @@ func (a *AlephiumClient) LockWallet(walletName string) (bool, error) {
 	return true, relevantError(err, errorDetail)
 }
 
-type UnlockWalletRequestBody struct {
+type WalletPasswordRequestBody struct {
 	Password string `json:"password"`
 }
 
 // UnlockWallet
 func (a *AlephiumClient) UnlockWallet(walletName string, password string) (bool, error) {
 
-	body := UnlockWalletRequestBody{Password: password}
+	body := WalletPasswordRequestBody{Password: password}
 
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Post("wallets/"+walletName+"/unlock").
@@ -130,10 +136,32 @@ func (a *AlephiumClient) Transfer(walletName string, address string, amount stri
 
 // DeriveNextAddress
 func (a *AlephiumClient) DeriveNextAddress(walletName string) (Address, error) {
-	return Address{}, fmt.Errorf("not implemented yet")
+	var address Address
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("wallets/"+walletName+"/deriveNextAddress").
+		Receive(&address, &errorDetail)
+
+	return address, relevantError(err, errorDetail)
 }
 
 // ChangeActiveAddress
 func (a *AlephiumClient) ChangeActiveAddress(walletName string) (Address, error) {
-	return Address{}, fmt.Errorf("not implemented yet")
+	var address Address
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("wallets/"+walletName+"/changeActiveAddress").
+		Receive(&address, &errorDetail)
+
+	return address, relevantError(err, errorDetail)
+}
+
+// DeleteWallet
+func (a *AlephiumClient) DeleteWallet(walletName string, walletPassword string) (bool, error) {
+
+	body := WalletPasswordRequestBody{Password: walletPassword}
+
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Delete("wallets/"+walletName).
+		BodyJSON(body).Receive(nil, &errorDetail)
+
+	return true, relevantError(err, errorDetail)
 }
