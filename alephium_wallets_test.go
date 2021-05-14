@@ -63,4 +63,42 @@ func TestCreateWalletE2E(t *testing.T) {
 	assert.True(t, ok)
 
 	log.Printf("name: %s, total balance: %d\n", newWallet.Name, totalBalance)
+
+	ok, err = alephiumClient.DeleteWallet(newWallet.Name, walletPassword)
+	assert.True(t, ok)
+
+	restoredWallet, err := alephiumClient.RestoreWallet(walletPassword, newWallet.Mnemonic)
+	assert.Nil(t, err)
+
+	walletAddresses, err = alephiumClient.GetWalletAddresses(restoredWallet.Name)
+	assert.Nil(t, err)
+	assert.Contains(t, walletAddresses.Addresses, walletAddresses.ActiveAddress)
+	log.Printf("name: %s, activeAddress: %s, addresses: %s\n", restoredWallet.Name, walletAddresses.ActiveAddress, walletAddresses.Addresses)
+
+	activeAddress, err := alephiumClient.ChangeActiveAddress(restoredWallet.Name, walletAddresses.ActiveAddress)
+	assert.Nil(t, err)
+	assert.Contains(t, walletAddresses.Addresses, activeAddress)
+	log.Printf("name: %s, new activeAddress: %s, addresses: %s\n", restoredWallet.Name, walletAddresses.ActiveAddress, walletAddresses.Addresses)
+
+	derivedAddress, err := alephiumClient.DeriveNextAddress(restoredWallet.Name)
+	assert.Nil(t, err)
+	log.Printf("derived next address: %s\n", derivedAddress)
+
+	locked, err := alephiumClient.LockWallet(restoredWallet.Name)
+	assert.Nil(t, err)
+	assert.True(t, locked)
+
+	walletStatus, err := alephiumClient.GetWalletStatus(restoredWallet.Name)
+	assert.Nil(t, err)
+	assert.True(t, walletStatus.Locked)
+	assert.Equal(t, restoredWallet.Name, walletStatus.Name)
+
+	unlocked, err := alephiumClient.UnlockWallet(restoredWallet.Name, walletPassword)
+	assert.Nil(t, err)
+	assert.True(t, unlocked)
+
+	walletStatus, err = alephiumClient.GetWalletStatus(restoredWallet.Name)
+	assert.Nil(t, err)
+	assert.False(t, walletStatus.Locked)
+	assert.Equal(t, restoredWallet.Name, walletStatus.Name)
 }
