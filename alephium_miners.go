@@ -42,7 +42,7 @@ func (a *AlephiumClient) UpdateMinersAddresses(addresses []string) error {
 	params := UpdateMinersAddressesBodyParams{
 		Addresses: addresses,
 	}
-	_, err := a.slingClient.New().Post("miners/addresses").
+	_, err := a.slingClient.New().Put("miners/addresses").
 		BodyJSON(params).Receive(nil, &errorDetail)
 
 	return relevantError(err, errorDetail)
