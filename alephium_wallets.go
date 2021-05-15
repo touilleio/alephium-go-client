@@ -39,14 +39,21 @@ func (a *AlephiumClient) CreateWallet(walletName string, password string, isMine
 type RestoreWalletRequestBody struct {
 	Password string `json:"password"`
 	Mnemonic string `json:"mnemonic"`
+	IsMiner            bool   `json:"isMiner,omitempty"`
+	WalletName         string `json:"walletName,omitempty"`
+	MnemonicPassphrase string `json:"mnemonicPassphrase,omitempty"`
 }
 
 // RestoreWallet
-func (a *AlephiumClient) RestoreWallet(password string, mnemonic string) (Wallet, error) {
+func (a *AlephiumClient) RestoreWallet(password string, mnemonic string, walletName string,
+	isMiner bool, mnemonicPassphrase string) (Wallet, error) {
 
 	body := RestoreWalletRequestBody{
 		Password: password,
 		Mnemonic: mnemonic,
+		WalletName: walletName,
+		IsMiner: isMiner,
+		MnemonicPassphrase: mnemonicPassphrase,
 	}
 
 	var wallet Wallet

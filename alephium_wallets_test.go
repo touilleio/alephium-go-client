@@ -67,7 +67,7 @@ func TestCreateWalletE2E(t *testing.T) {
 	ok, err = alephiumClient.DeleteWallet(newWallet.Name, walletPassword)
 	assert.True(t, ok)
 
-	restoredWallet, err := alephiumClient.RestoreWallet(walletPassword, newWallet.Mnemonic)
+	restoredWallet, err := alephiumClient.RestoreWallet(walletPassword, newWallet.Mnemonic, newWallet.Name, false, "")
 	assert.Nil(t, err)
 
 	walletAddresses, err = alephiumClient.GetWalletAddresses(restoredWallet.Name)
