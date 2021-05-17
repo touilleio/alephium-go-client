@@ -1,15 +1,19 @@
 package alephium
 
-import (
-	"fmt"
-)
-
 // GetAddressBalance
-func (a *AlephiumClient) GetAddressBalance(address string) error {
-	return fmt.Errorf("not implemented yet")
+func (a *AlephiumClient) GetAddressBalance(address string) (AddressUtxoBalance, error) {
+	var addressBalance AddressUtxoBalance
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("addresses/" + address + "/balance").
+		Receive(&addressBalance, &errorDetail)
+	return addressBalance, relevantError(err, errorDetail)
 }
 
-// GetAddressGroupv
-func (a *AlephiumClient) GetAddressGroup(address string) error {
-	return fmt.Errorf("not implemented yet")
+// GetAddressGroup
+func (a *AlephiumClient) GetAddressGroup(address string) (AddressGroup, error) {
+	var addressGroup AddressGroup
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("addresses/" + address + "/group").
+		Receive(&addressGroup, &errorDetail)
+	return addressGroup, relevantError(err, errorDetail)
 }

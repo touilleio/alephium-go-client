@@ -110,3 +110,13 @@ type TransactionStatus struct {
 	FromGroupConfirmations int    `json:"fromGroupConfirmations"`
 	ToGroupConfirmations   int    `json:"toGroupConfirmations"`
 }
+
+type AddressUtxoBalance struct {
+	Balance string `json:"balance"`
+	LockedBalance string `json:"lockedBalance"`
+	UtxoNum int `json:"utxoNum"`
+}
+
+type AddressGroup struct {
+	Group int `json:"group"`
+}
