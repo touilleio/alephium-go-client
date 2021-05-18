@@ -120,3 +120,19 @@ type AddressUtxoBalance struct {
 type AddressGroup struct {
 	Group int `json:"group"`
 }
+
+type DiscoveredNeighbor struct {
+	CliqueId string `json:"cliqueId"`
+	BrokerId int `json:"brokerId"`
+	GroupNumPerBroker int `json:"groupNumPerBroker"`
+}
+
+type Misbehavior struct {
+	Peer string `json:"peer"`
+	Status MisbehaviorStatus `json:"status"`
+}
+
+type MisbehaviorStatus struct {
+	Type string `json:"type"`
+	Value int `json:"value"`
+}

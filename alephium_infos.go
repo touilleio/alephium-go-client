@@ -1,7 +1,6 @@
 package alephium
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -59,11 +58,19 @@ func (a *AlephiumClient) IsSynced() (bool, error) {
 }
 
 // GetDiscoveredNeighbors
-func (a *AlephiumClient) GetDiscoveredNeighbors() error {
-	return fmt.Errorf("not implemented yet")
+func (a *AlephiumClient) GetDiscoveredNeighbors() ([]DiscoveredNeighbor, error) {
+	var neighbors []DiscoveredNeighbor
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("infos/discovered-neighbors").
+		Receive(&neighbors, &errorDetail)
+	return neighbors, relevantError(err, errorDetail)
 }
 
 // GetMisbehaviors
-func (a *AlephiumClient) GetMisbehaviors() error {
-	return fmt.Errorf("not implemented yet")
+func (a *AlephiumClient) GetMisbehaviors() ([]Misbehavior, error) {
+	var misbehaviors []Misbehavior
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("infos/misbehaviors").
+		Receive(&misbehaviors, &errorDetail)
+	return misbehaviors, relevantError(err, errorDetail)
 }
