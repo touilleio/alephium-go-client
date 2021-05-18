@@ -2,6 +2,11 @@ package alephium
 
 import (
 	"fmt"
+	"time"
+)
+
+const (
+	txConfirmed = "confirmed"
 )
 
 // GetUnconfirmedTransactions
@@ -40,4 +45,27 @@ func (a *AlephiumClient) GetTransactionStatus(transactionId string, fromGroup in
 		QueryStruct(params).Receive(&transactionStatus, &errorDetail)
 
 	return transactionStatus, relevantError(err, errorDetail)
+}
+
+// WaitForTransactionConfirmed
+func (a *AlephiumClient) WaitForTransactionConfirmed(transactionId string, fromGroup int, toGroup int) error {
+	return a.WaitForTransactionStatus(txConfirmed, transactionId, fromGroup, toGroup)
+}
+
+// WaitForTransactionStatus
+func (a *AlephiumClient) WaitForTransactionStatus(status string, transactionId string, fromGroup int, toGroup int) error {
+	txStatus := "unknown"
+	for ; ; {
+		tx, err := a.GetTransactionStatus(transactionId, fromGroup, toGroup)
+		if err != nil {
+			return err
+		}
+		txStatus = tx.Type
+		if txStatus == status {
+			return nil
+		} else {
+			a.log.Debugf("Tx %s not %s yet, sleeping %s", transactionId, status, a.sleepTime)
+			time.Sleep(a.sleepTime)
+		}
+	}
 }

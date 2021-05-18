@@ -34,18 +34,19 @@ func IsSyncedWithAtLeastOnePeer(peers []InterCliquePeerInfo) bool {
 }
 
 func (a *AlephiumClient) WaitUntilSyncedWithAtLeastOnePeer() error {
-	for isSynced := false; !isSynced; {
+	for isSynced := false; ; {
 		var err error
 		isSynced, err = a.IsSynced()
 		if err != nil {
 			return err
 		}
-		if !isSynced {
-			a.log.Debugf("Not sync'ed yet, sleeping 10s")
-			time.Sleep(10 * time.Second)
+		if isSynced {
+			return nil
+		} else {
+			a.log.Debugf("Not sync'ed yet, sleeping %s", a.sleepTime)
+			time.Sleep(a.sleepTime)
 		}
 	}
-	return nil
 }
 
 func (a *AlephiumClient) IsSynced() (bool, error) {

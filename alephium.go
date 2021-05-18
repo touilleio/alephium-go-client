@@ -12,6 +12,7 @@ type AlephiumClient struct {
 	oldClient   *http.Client
 	slingClient *sling.Sling
 	log         *logrus.Logger
+	sleepTime   time.Duration
 }
 
 func New(alephiumEndpoint string, log *logrus.Logger) (*AlephiumClient, error) {
@@ -26,6 +27,7 @@ func New(alephiumEndpoint string, log *logrus.Logger) (*AlephiumClient, error) {
 		oldClient:   client,
 		slingClient: slingClient,
 		log:         log,
+		sleepTime: 5 * time.Second,
 	}
 
 	return alephiumClient, nil
