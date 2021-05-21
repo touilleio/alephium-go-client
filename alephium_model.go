@@ -77,19 +77,23 @@ type IPAndPort struct {
 }
 
 type SelfCliqueInfo struct {
-	CliqueId              string     `json:"cliqueId"`
-	NetworkType           string     `json:"networkType"`
-	NumZerosAtLeastInHash int        `json:"numZerosAtLeastInHash"`
-	Nodes                 []NodeInfo `json:"nodes"`
-	Synced                bool       `json:"synced"`
-	GroupNumPerBroker     int        `json:"groupNumPerBroker"`
-	Groups                int        `json:"groups"`
+	CliqueId              string        `json:"cliqueId"`
+	NetworkType           string        `json:"networkType"`
+	NumZerosAtLeastInHash int           `json:"numZerosAtLeastInHash"`
+	Nodes                 []NodeAddress `json:"nodes"`
+	Synced                bool          `json:"synced"`
+	GroupNumPerBroker     int           `json:"groupNumPerBroker"`
+	Groups                int           `json:"groups"`
 }
 
-type NodeInfo struct {
+type NodeAddress struct {
 	Address  string `json:"address"`
 	RestPort int    `json:"restPort"`
 	WsPort   int    `json:"wsPort"`
+}
+
+type NodeInfo struct {
+	IsMining bool `json:"isMining"`
 }
 
 type Transaction struct {

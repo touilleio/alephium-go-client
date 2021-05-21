@@ -75,3 +75,32 @@ func (a *AlephiumClient) GetMisbehaviors() ([]Misbehavior, error) {
 		Receive(&misbehaviors, &errorDetail)
 	return misbehaviors, relevantError(err, errorDetail)
 }
+
+type UnbanMisbehaviorsBodyParams struct {
+	Type string `json:"type"`
+	Peers []string `json:"peers"`
+}
+
+// UnbanMisbehaviors
+func (a *AlephiumClient) UnbanMisbehaviors(peers []string) (bool, error) {
+	var errorDetail ErrorDetail
+	params := UnbanMisbehaviorsBodyParams{
+		Type: "uban",
+		Peers: peers,
+	}
+	_, err := a.slingClient.New().Post("infos/misbehaviors").
+		BodyJSON(params).Receive(nil, &errorDetail)
+	return true, relevantError(err, errorDetail)
+}
+
+// GetNodeInfos
+func (a *AlephiumClient) GetNodeInfos() (NodeInfo, error) {
+	var nodeInfo NodeInfo
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("infos/node").
+		Receive(&nodeInfo, &errorDetail)
+	return nodeInfo, relevantError(err, errorDetail)
+}
+
+
+// gasPrice?

@@ -65,18 +65,12 @@ func (a *AlephiumClient) RestoreWallet(password string, mnemonic string, walletN
 }
 
 // GetWalletStatus
-// Implementation will be updated with PR #200
 func (a *AlephiumClient) GetWalletStatus(walletName string) (WalletInfo, error) {
-	wallets, err := a.GetWallets()
-	if err != nil {
-		return WalletInfo{}, err
-	}
-	for _, w := range wallets {
-		if w.Name == walletName {
-			return w, nil
-		}
-	}
-	return WalletInfo{}, ErrorDetail{Detail: walletName + " not found", Resource: walletName}
+       var walletInfo WalletInfo
+       var errorDetail ErrorDetail
+       _, err := a.slingClient.New().Path("wallets/"+walletName).
+               Receive(&walletInfo, &errorDetail)
+       return walletInfo, relevantError(err, errorDetail)
 }
 
 // LockWallet

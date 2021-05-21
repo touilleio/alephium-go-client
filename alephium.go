@@ -33,10 +33,6 @@ func New(alephiumEndpoint string, log *logrus.Logger) (*AlephiumClient, error) {
 	return alephiumClient, nil
 }
 
-const (
-	JsonContentType = "application/json"
-)
-
 func relevantError(e1 error, e2 ErrorDetail) error {
 	if e1 != nil {
 		return e1
