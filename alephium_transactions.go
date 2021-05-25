@@ -10,17 +10,17 @@ const (
 )
 
 // GetUnconfirmedTransactions
-func (a *AlephiumClient) GetUnconfirmedTransactions() error {
+func (a *Client) GetUnconfirmedTransactions() error {
 	return fmt.Errorf("not implemented yet")
 }
 
 // BuildTransaction
-func (a *AlephiumClient) BuildTransaction(hash string) error {
+func (a *Client) BuildTransaction(hash string) error {
 	return fmt.Errorf("not implemented yet")
 }
 
 // SendTransaction
-func (a *AlephiumClient) SendTransaction(transactionId string) error {
+func (a *Client) SendTransaction(transactionId string) error {
 	return fmt.Errorf("not implemented yet")
 }
 
@@ -31,7 +31,7 @@ type TransactionStatusRequestParams struct {
 }
 
 // GetTransactionStatus
-func (a *AlephiumClient) GetTransactionStatus(transactionId string, fromGroup int, toGroup int) (TransactionStatus, error) {
+func (a *Client) GetTransactionStatus(transactionId string, fromGroup int, toGroup int) (TransactionStatus, error) {
 
 	var transactionStatus TransactionStatus
 	var errorDetail ErrorDetail
@@ -48,14 +48,14 @@ func (a *AlephiumClient) GetTransactionStatus(transactionId string, fromGroup in
 }
 
 // WaitForTransactionConfirmed
-func (a *AlephiumClient) WaitForTransactionConfirmed(transactionId string, fromGroup int, toGroup int) error {
+func (a *Client) WaitForTransactionConfirmed(transactionId string, fromGroup int, toGroup int) error {
 	return a.WaitForTransactionStatus(txConfirmed, transactionId, fromGroup, toGroup)
 }
 
 // WaitForTransactionStatus
-func (a *AlephiumClient) WaitForTransactionStatus(status string, transactionId string, fromGroup int, toGroup int) error {
+func (a *Client) WaitForTransactionStatus(status string, transactionId string, fromGroup int, toGroup int) error {
 	txStatus := "unknown"
-	for ; ; {
+	for {
 		tx, err := a.GetTransactionStatus(transactionId, fromGroup, toGroup)
 		if err != nil {
 			return err

@@ -116,9 +116,9 @@ type TransactionStatus struct {
 }
 
 type AddressUtxoBalance struct {
-	Balance string `json:"balance"`
+	Balance       string `json:"balance"`
 	LockedBalance string `json:"lockedBalance"`
-	UtxoNum int `json:"utxoNum"`
+	UtxoNum       int    `json:"utxoNum"`
 }
 
 type AddressGroup struct {
@@ -126,17 +126,17 @@ type AddressGroup struct {
 }
 
 type DiscoveredNeighbor struct {
-	CliqueId string `json:"cliqueId"`
-	BrokerId int `json:"brokerId"`
-	GroupNumPerBroker int `json:"groupNumPerBroker"`
+	CliqueId          string `json:"cliqueId"`
+	BrokerId          int    `json:"brokerId"`
+	GroupNumPerBroker int    `json:"groupNumPerBroker"`
 }
 
 type Misbehavior struct {
-	Peer string `json:"peer"`
+	Peer   string            `json:"peer"`
 	Status MisbehaviorStatus `json:"status"`
 }
 
 type MisbehaviorStatus struct {
-	Type string `json:"type"`
-	Value int `json:"value"`
+	Type  string `json:"type"`
+	Value int    `json:"value"`
 }

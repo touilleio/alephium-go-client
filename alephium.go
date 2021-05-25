@@ -7,30 +7,34 @@ import (
 	"time"
 )
 
-type AlephiumClient struct {
-	oldEndpoint string
+type Client struct {
+	endpointURI string
 	oldClient   *http.Client
 	slingClient *sling.Sling
 	log         *logrus.Logger
 	sleepTime   time.Duration
 }
 
-func New(alephiumEndpoint string, log *logrus.Logger) (*AlephiumClient, error) {
+func New(alephiumEndpoint string, log *logrus.Logger) (*Client, error) {
 
 	client := &http.Client{
 		Timeout: 3 * time.Second,
 	}
 
 	slingClient := sling.New().Client(client).Base(alephiumEndpoint)
-	alephiumClient := &AlephiumClient{
-		oldEndpoint: alephiumEndpoint,
+	alephiumClient := &Client{
+		endpointURI: alephiumEndpoint,
 		oldClient:   client,
 		slingClient: slingClient,
 		log:         log,
-		sleepTime: 5 * time.Second,
+		sleepTime:   5 * time.Second,
 	}
 
 	return alephiumClient, nil
+}
+
+func (a *Client) String() string {
+	return a.endpointURI
 }
 
 func relevantError(e1 error, e2 ErrorDetail) error {

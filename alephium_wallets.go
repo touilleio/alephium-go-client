@@ -1,7 +1,7 @@
 package alephium
 
 // GetWallets
-func (a *AlephiumClient) GetWallets() ([]WalletInfo, error) {
+func (a *Client) GetWallets() ([]WalletInfo, error) {
 	var wallets []WalletInfo
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Path("wallets").
@@ -19,7 +19,7 @@ type CreateWalletRequestBody struct {
 }
 
 // CreateWallet
-func (a *AlephiumClient) CreateWallet(walletName string, password string, isMiner bool, mnemonicPassphrase string) (WalletCreate, error) {
+func (a *Client) CreateWallet(walletName string, password string, isMiner bool, mnemonicPassphrase string) (WalletCreate, error) {
 
 	body := CreateWalletRequestBody{
 		Password:           password,
@@ -37,22 +37,22 @@ func (a *AlephiumClient) CreateWallet(walletName string, password string, isMine
 }
 
 type RestoreWalletRequestBody struct {
-	Password string `json:"password"`
-	Mnemonic string `json:"mnemonic"`
+	Password           string `json:"password"`
+	Mnemonic           string `json:"mnemonic"`
 	IsMiner            bool   `json:"isMiner,omitempty"`
 	WalletName         string `json:"walletName,omitempty"`
 	MnemonicPassphrase string `json:"mnemonicPassphrase,omitempty"`
 }
 
 // RestoreWallet
-func (a *AlephiumClient) RestoreWallet(password string, mnemonic string, walletName string,
+func (a *Client) RestoreWallet(password string, mnemonic string, walletName string,
 	isMiner bool, mnemonicPassphrase string) (Wallet, error) {
 
 	body := RestoreWalletRequestBody{
-		Password: password,
-		Mnemonic: mnemonic,
-		WalletName: walletName,
-		IsMiner: isMiner,
+		Password:           password,
+		Mnemonic:           mnemonic,
+		WalletName:         walletName,
+		IsMiner:            isMiner,
 		MnemonicPassphrase: mnemonicPassphrase,
 	}
 
@@ -65,16 +65,16 @@ func (a *AlephiumClient) RestoreWallet(password string, mnemonic string, walletN
 }
 
 // GetWalletStatus
-func (a *AlephiumClient) GetWalletStatus(walletName string) (WalletInfo, error) {
-       var walletInfo WalletInfo
-       var errorDetail ErrorDetail
-       _, err := a.slingClient.New().Path("wallets/"+walletName).
-               Receive(&walletInfo, &errorDetail)
-       return walletInfo, relevantError(err, errorDetail)
+func (a *Client) GetWalletStatus(walletName string) (WalletInfo, error) {
+	var walletInfo WalletInfo
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("wallets/"+walletName).
+		Receive(&walletInfo, &errorDetail)
+	return walletInfo, relevantError(err, errorDetail)
 }
 
 // LockWallet
-func (a *AlephiumClient) LockWallet(walletName string) (bool, error) {
+func (a *Client) LockWallet(walletName string) (bool, error) {
 
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Post("wallets/"+walletName+"/lock").
@@ -88,7 +88,7 @@ type WalletPasswordRequestBody struct {
 }
 
 // UnlockWallet
-func (a *AlephiumClient) UnlockWallet(walletName string, password string) (bool, error) {
+func (a *Client) UnlockWallet(walletName string, password string) (bool, error) {
 
 	body := WalletPasswordRequestBody{Password: password}
 
@@ -100,7 +100,7 @@ func (a *AlephiumClient) UnlockWallet(walletName string, password string) (bool,
 }
 
 // GetWalletBalances
-func (a *AlephiumClient) GetWalletBalances(walletName string) (WalletBalances, error) {
+func (a *Client) GetWalletBalances(walletName string) (WalletBalances, error) {
 
 	var walletBalances WalletBalances
 	var errorDetail ErrorDetail
@@ -111,7 +111,7 @@ func (a *AlephiumClient) GetWalletBalances(walletName string) (WalletBalances, e
 }
 
 // GetWalletAddresses
-func (a *AlephiumClient) GetWalletAddresses(walletName string) (WalletAddresses, error) {
+func (a *Client) GetWalletAddresses(walletName string) (WalletAddresses, error) {
 
 	var walletAddresses WalletAddresses
 	var errorDetail ErrorDetail
@@ -127,7 +127,7 @@ type TransferRequest struct {
 }
 
 // Transfer
-func (a *AlephiumClient) Transfer(walletName string, address string, amount string) (Transaction, error) {
+func (a *Client) Transfer(walletName string, address string, amount string) (Transaction, error) {
 
 	// TODO: run sanity check on address and amount
 	body := TransferRequest{Address: address, Amount: amount}
@@ -141,7 +141,7 @@ func (a *AlephiumClient) Transfer(walletName string, address string, amount stri
 }
 
 // DeriveNextAddress
-func (a *AlephiumClient) DeriveNextAddress(walletName string) (Address, error) {
+func (a *Client) DeriveNextAddress(walletName string) (Address, error) {
 	var address Address
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Post("wallets/"+walletName+"/deriveNextAddress").
@@ -155,7 +155,7 @@ type AddressBodyRequest struct {
 }
 
 // ChangeActiveAddress
-func (a *AlephiumClient) ChangeActiveAddress(walletName string, activeAddress string) (bool, error) {
+func (a *Client) ChangeActiveAddress(walletName string, activeAddress string) (bool, error) {
 
 	body := AddressBodyRequest{Address: activeAddress}
 
@@ -168,7 +168,7 @@ func (a *AlephiumClient) ChangeActiveAddress(walletName string, activeAddress st
 }
 
 // DeleteWallet
-func (a *AlephiumClient) DeleteWallet(walletName string, walletPassword string) (bool, error) {
+func (a *Client) DeleteWallet(walletName string, walletPassword string) (bool, error) {
 
 	body := WalletPasswordRequestBody{Password: walletPassword}
 

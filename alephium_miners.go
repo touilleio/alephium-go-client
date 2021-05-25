@@ -5,12 +5,12 @@ import (
 )
 
 // StartMining
-func (a *AlephiumClient) StartMining() (bool, error) {
+func (a *Client) StartMining() (bool, error) {
 	return a.miningAction("start-mining")
 }
 
 // StopMining
-func (a *AlephiumClient) StopMining() (bool, error) {
+func (a *Client) StopMining() (bool, error) {
 	return a.miningAction("stop-mining")
 }
 
@@ -18,7 +18,7 @@ type MiningActionRequestParams struct {
 	Action string `url:"action"`
 }
 
-func (a *AlephiumClient) miningAction(action string) (bool, error) {
+func (a *Client) miningAction(action string) (bool, error) {
 
 	var errorDetail ErrorDetail
 	var actionOk bool
@@ -36,7 +36,7 @@ type UpdateMinersAddressesBodyParams struct {
 }
 
 // UpdateMinersAddresses
-func (a *AlephiumClient) UpdateMinersAddresses(addresses []string) error {
+func (a *Client) UpdateMinersAddresses(addresses []string) error {
 
 	var errorDetail ErrorDetail
 	params := UpdateMinersAddressesBodyParams{
@@ -49,7 +49,7 @@ func (a *AlephiumClient) UpdateMinersAddresses(addresses []string) error {
 }
 
 // GetMinersAddresses
-func (a *AlephiumClient) GetMinersAddresses() (MinersAddresses, error) {
+func (a *Client) GetMinersAddresses() (MinersAddresses, error) {
 
 	var minersAddresses MinersAddresses
 	var errorDetail ErrorDetail
@@ -60,11 +60,11 @@ func (a *AlephiumClient) GetMinersAddresses() (MinersAddresses, error) {
 }
 
 // GetBlockCandidate
-func (a *AlephiumClient) GetBlockCandidate() error {
+func (a *Client) GetBlockCandidate() error {
 	return fmt.Errorf("not implemented yet")
 }
 
 // SubmitNewBlock
-func (a *AlephiumClient) SubmitNewBlock() error {
+func (a *Client) SubmitNewBlock() error {
 	return fmt.Errorf("not implemented yet")
 }

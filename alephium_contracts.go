@@ -5,16 +5,16 @@ import (
 )
 
 // SendContract
-func (a *AlephiumClient) SendContract() error {
+func (a *Client) SendContract() error {
 	return fmt.Errorf("not implemented yet")
 }
 
 // CompileContract
-func (a *AlephiumClient) CompileContract() error {
+func (a *Client) CompileContract() error {
 	return fmt.Errorf("not implemented yet")
 }
 
 // BuildContract
-func (a *AlephiumClient) BuildContract() error {
+func (a *Client) BuildContract() error {
 	return fmt.Errorf("not implemented yet")
 }

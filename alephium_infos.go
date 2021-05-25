@@ -5,7 +5,7 @@ import (
 )
 
 // GetSelfCliqueInfos
-func (a *AlephiumClient) GetSelfCliqueInfos() (SelfCliqueInfo, error) {
+func (a *Client) GetSelfCliqueInfos() (SelfCliqueInfo, error) {
 	var selfCliqueInfos SelfCliqueInfo
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Path("infos/self-clique").
@@ -14,7 +14,7 @@ func (a *AlephiumClient) GetSelfCliqueInfos() (SelfCliqueInfo, error) {
 }
 
 // GetInterCliquePeerInfos
-func (a *AlephiumClient) GetInterCliquePeerInfos() ([]InterCliquePeerInfo, error) {
+func (a *Client) GetInterCliquePeerInfos() ([]InterCliquePeerInfo, error) {
 	var interCliquePeerInfos []InterCliquePeerInfo
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Path("infos/inter-clique-peer-info").
@@ -33,7 +33,7 @@ func IsSyncedWithAtLeastOnePeer(peers []InterCliquePeerInfo) bool {
 	return atLeastOneSynced
 }
 
-func (a *AlephiumClient) WaitUntilSyncedWithAtLeastOnePeer() error {
+func (a *Client) WaitUntilSyncedWithAtLeastOnePeer() error {
 	for isSynced := false; ; {
 		var err error
 		isSynced, err = a.IsSynced()
@@ -49,7 +49,7 @@ func (a *AlephiumClient) WaitUntilSyncedWithAtLeastOnePeer() error {
 	}
 }
 
-func (a *AlephiumClient) IsSynced() (bool, error) {
+func (a *Client) IsSynced() (bool, error) {
 	peers, err := a.GetInterCliquePeerInfos()
 	if err != nil {
 		return false, err
@@ -59,7 +59,7 @@ func (a *AlephiumClient) IsSynced() (bool, error) {
 }
 
 // GetDiscoveredNeighbors
-func (a *AlephiumClient) GetDiscoveredNeighbors() ([]DiscoveredNeighbor, error) {
+func (a *Client) GetDiscoveredNeighbors() ([]DiscoveredNeighbor, error) {
 	var neighbors []DiscoveredNeighbor
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Path("infos/discovered-neighbors").
@@ -68,7 +68,7 @@ func (a *AlephiumClient) GetDiscoveredNeighbors() ([]DiscoveredNeighbor, error) 
 }
 
 // GetMisbehaviors
-func (a *AlephiumClient) GetMisbehaviors() ([]Misbehavior, error) {
+func (a *Client) GetMisbehaviors() ([]Misbehavior, error) {
 	var misbehaviors []Misbehavior
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Path("infos/misbehaviors").
@@ -77,15 +77,15 @@ func (a *AlephiumClient) GetMisbehaviors() ([]Misbehavior, error) {
 }
 
 type UnbanMisbehaviorsBodyParams struct {
-	Type string `json:"type"`
+	Type  string   `json:"type"`
 	Peers []string `json:"peers"`
 }
 
 // UnbanMisbehaviors
-func (a *AlephiumClient) UnbanMisbehaviors(peers []string) (bool, error) {
+func (a *Client) UnbanMisbehaviors(peers []string) (bool, error) {
 	var errorDetail ErrorDetail
 	params := UnbanMisbehaviorsBodyParams{
-		Type: "uban",
+		Type:  "uban",
 		Peers: peers,
 	}
 	_, err := a.slingClient.New().Post("infos/misbehaviors").
@@ -94,13 +94,12 @@ func (a *AlephiumClient) UnbanMisbehaviors(peers []string) (bool, error) {
 }
 
 // GetNodeInfos
-func (a *AlephiumClient) GetNodeInfos() (NodeInfo, error) {
+func (a *Client) GetNodeInfos() (NodeInfo, error) {
 	var nodeInfo NodeInfo
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Path("infos/node").
 		Receive(&nodeInfo, &errorDetail)
 	return nodeInfo, relevantError(err, errorDetail)
 }
-
 
 // gasPrice?
