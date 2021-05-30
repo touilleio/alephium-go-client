@@ -18,7 +18,7 @@ type Client struct {
 func New(alephiumEndpoint string, log *logrus.Logger) (*Client, error) {
 
 	client := &http.Client{
-		Timeout: 3 * time.Second,
+		Timeout: 30 * time.Second,
 	}
 
 	slingClient := sling.New().Client(client).Base(alephiumEndpoint)
