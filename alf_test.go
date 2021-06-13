@@ -23,6 +23,12 @@ func TestALFConstruct(t *testing.T) {
 	assert.Equal(t, "12", a2.String())
 }
 
+
+func TestZeroALF(t *testing.T) {
+	a1 := ALF{}
+	assert.Equal(t, "0", a1.String())
+}
+
 func TestALFConstructWithDot(t *testing.T) {
 	a1, ok := AFLFromALFString("12.12")
 	assert.True(t, ok)

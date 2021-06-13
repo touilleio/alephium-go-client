@@ -80,10 +80,16 @@ func (alf ALF) Cmp(other ALF) int {
 }
 
 func (alf ALF) String() string {
+	if alf.Amount == nil {
+		return "0"
+	}
 	return alf.Amount.String()
 }
 
 func (alf ALF) PrettyString() string {
+	if alf.Amount == nil {
+		return "0"
+	}
 	if alf.Amount.Cmp(CoinInNanoALF) > 0 {
 		return fmt.Sprintf("%.9f%s", alf.FloatALF(), N)
 	}
