@@ -34,11 +34,11 @@ func (b WalletBalances) GetTotalBalance() (*big.Int, bool) {
 
 type AddressBalance struct {
 	Address string `json:"address"`
-	Balance string `json:"balance"`
+	Balance ALF    `json:"balance"`
 }
 
 func (b AddressBalance) GetBalance() (*big.Int, bool) {
-	return new(big.Int).SetString(b.Balance, 0)
+	return b.Balance.Amount, true
 }
 
 var WalletLockError = ErrorDetail{
@@ -116,7 +116,7 @@ type TransactionStatus struct {
 }
 
 type AddressUtxoBalance struct {
-	Balance       string `json:"balance"`
+	Balance       ALF    `json:"balance"`
 	LockedBalance string `json:"lockedBalance"`
 	UtxoNum       int    `json:"utxoNum"`
 }
