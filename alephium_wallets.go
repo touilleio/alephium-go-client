@@ -123,11 +123,11 @@ func (a *Client) GetWalletAddresses(walletName string) (WalletAddresses, error) 
 
 type TransferRequest struct {
 	Address string `json:"address"`
-	Amount  string `json:"amount"`
+	Amount  ALF    `json:"amount"`
 }
 
 // Transfer
-func (a *Client) Transfer(walletName string, address string, amount string) (Transaction, error) {
+func (a *Client) Transfer(walletName string, address string, amount ALF) (Transaction, error) {
 
 	// TODO: run sanity check on address and amount
 	body := TransferRequest{Address: address, Amount: amount}

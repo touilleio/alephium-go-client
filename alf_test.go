@@ -23,7 +23,6 @@ func TestALFConstruct(t *testing.T) {
 	assert.Equal(t, "12", a2.String())
 }
 
-
 func TestZeroALF(t *testing.T) {
 	a1 := ALF{}
 	assert.Equal(t, "0", a1.String())

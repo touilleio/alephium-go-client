@@ -12,7 +12,7 @@ import (
 func TestCreateWalletE2E(t *testing.T) {
 	ctx := context.Background()
 	req := testcontainers.ContainerRequest{
-		Image:        "touilleio/alephium:v0.7.5",
+		Image:        "touilleio/alephium:v0.7.8",
 		ExposedPorts: []string{"12973/tcp"},
 		WaitingFor:   wait.ForListeningPort("12973/tcp"),
 	}

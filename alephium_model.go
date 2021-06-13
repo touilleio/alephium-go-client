@@ -24,12 +24,15 @@ func (e ErrorDetail) Error() string {
 }
 
 type WalletBalances struct {
-	TotalBalance string           `json:"totalBalance"`
+	TotalBalance ALF              `json:"totalBalance"`
 	Balances     []AddressBalance `json:"balances"`
 }
 
 func (b WalletBalances) GetTotalBalance() (*big.Int, bool) {
-	return new(big.Int).SetString(b.TotalBalance, 0)
+	if b.TotalBalance.Amount == nil {
+		return new(big.Int), true
+	}
+	return b.TotalBalance.Amount, true
 }
 
 type AddressBalance struct {
