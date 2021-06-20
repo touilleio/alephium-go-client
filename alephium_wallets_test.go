@@ -2,6 +2,8 @@ package alephium
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/sqooba/go-common/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
@@ -101,4 +103,15 @@ func TestCreateWalletE2E(t *testing.T) {
 	assert.Nil(t, err)
 	assert.False(t, walletStatus.Locked)
 	assert.Equal(t, restoredWallet.Name, walletStatus.Name)
+}
+
+func TestJSONALF(t *testing.T) {
+	amount, ok := AFLFromALFString("12.12")
+	assert.True(t, ok)
+
+	body := TransferRequest{Address: "1234", Amount: amount}
+
+	b, err := json.Marshal(&body)
+	assert.Nil(t, err)
+	fmt.Printf("json: %s\n", string(b))
 }

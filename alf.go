@@ -134,3 +134,8 @@ func (alf *ALF) UnmarshalJSON(b []byte) error {
 	err := alf.Amount.UnmarshalJSON(b[1 : len(b)-1])
 	return err
 }
+
+func ToNanoALF(alf ALF) int {
+	m := new(big.Int).Div(alf.Amount, CoinInNanoALF)
+	return int(m.Int64())
+}

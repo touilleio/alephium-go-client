@@ -1,6 +1,13 @@
 Alephium Go Client Changelog
 ====
 
+# Version 2021.06.20
+
+## Improvements
+
+- Export TxConfirmed
+- Add ALF functions
+
 # Version 2021.06.12
 
 ## Improvements

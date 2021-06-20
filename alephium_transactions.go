@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	txConfirmed = "confirmed"
+	TxConfirmed = "confirmed"
 )
 
 // GetUnconfirmedTransactions
@@ -49,7 +49,7 @@ func (a *Client) GetTransactionStatus(transactionId string, fromGroup int, toGro
 
 // WaitForTransactionConfirmed
 func (a *Client) WaitForTransactionConfirmed(transactionId string, fromGroup int, toGroup int) error {
-	return a.WaitForTransactionStatus(txConfirmed, transactionId, fromGroup, toGroup)
+	return a.WaitForTransactionStatus(TxConfirmed, transactionId, fromGroup, toGroup)
 }
 
 // WaitForTransactionStatus
