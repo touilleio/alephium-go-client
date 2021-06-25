@@ -91,7 +91,7 @@ func (alf ALF) PrettyString() string {
 		return "0"
 	}
 	if alf.Amount.Cmp(CoinInNanoALF) > 0 {
-		return fmt.Sprintf("%.9f%s", alf.FloatALF(), N)
+		return fmt.Sprintf("%s%s", strings.TrimRight(fmt.Sprintf("%.9f", alf.FloatALF()), "0"), N)
 	}
 	return alf.Amount.String()
 }
