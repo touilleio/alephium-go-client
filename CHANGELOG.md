@@ -1,6 +1,20 @@
 Alephium Go Client Changelog
 ====
 
+# Version 2021.06.25
+
+## Improvements
+
+- [breaking] Type-safe AddressUtxoBalance.AddressUtxoBalance
+
+## Minor
+
+- Strip tailing 0 in pretty print
+
+## Fix
+
+- Remove unwanted println
+
 # Version 2021.06.20
 
 ## Improvements
