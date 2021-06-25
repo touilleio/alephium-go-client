@@ -126,7 +126,6 @@ func (alf ALF) MarshalJSON() ([]byte, error) {
 }
 
 func (alf *ALF) UnmarshalJSON(b []byte) error {
-	fmt.Printf("%s", string(b))
 	if len(b) < 2 {
 		return fmt.Errorf("NaN")
 	}
