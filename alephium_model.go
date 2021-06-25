@@ -119,9 +119,9 @@ type TransactionStatus struct {
 }
 
 type AddressUtxoBalance struct {
-	Balance       ALF    `json:"balance"`
-	LockedBalance string `json:"lockedBalance"`
-	UtxoNum       int    `json:"utxoNum"`
+	Balance       ALF `json:"balance"`
+	LockedBalance ALF `json:"lockedBalance"`
+	UtxoNum       int `json:"utxoNum"`
 }
 
 type AddressGroup struct {
