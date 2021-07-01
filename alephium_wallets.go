@@ -140,11 +140,29 @@ func (a *Client) Transfer(walletName string, address string, amount ALF) (Transa
 	return transaction, relevantError(err, errorDetail)
 }
 
+type SweepAllRequest struct {
+	Address string `json:"toAddress"`
+}
+
+// SweepAll
+func (a *Client) SweepAll(walletName string, toAddress string) (Transaction, error) {
+
+	// TODO: run sanity check on address
+	body := SweepAllRequest{Address: toAddress}
+
+	var transaction Transaction
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Post("wallets/"+walletName+"/sweep-all").
+		BodyJSON(body).Receive(&transaction, &errorDetail)
+
+	return transaction, relevantError(err, errorDetail)
+}
+
 // DeriveNextAddress
 func (a *Client) DeriveNextAddress(walletName string) (Address, error) {
 	var address Address
 	var errorDetail ErrorDetail
-	_, err := a.slingClient.New().Post("wallets/"+walletName+"/deriveNextAddress").
+	_, err := a.slingClient.New().Post("wallets/"+walletName+"/derive-next-address").
 		Receive(&address, &errorDetail)
 
 	return address, relevantError(err, errorDetail)
@@ -161,7 +179,7 @@ func (a *Client) ChangeActiveAddress(walletName string, activeAddress string) (b
 
 	//var address string
 	var errorDetail ErrorDetail
-	_, err := a.slingClient.New().Post("wallets/"+walletName+"/changeActiveAddress").
+	_, err := a.slingClient.New().Post("wallets/"+walletName+"/change-active-address").
 		BodyJSON(body).Receive(nil, &errorDetail)
 
 	return true, relevantError(err, errorDetail)
