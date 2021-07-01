@@ -122,6 +122,10 @@ func (a *Client) GetWalletAddresses(walletName string) (WalletAddresses, error) 
 }
 
 type TransferRequest struct {
+	Destinations []TransferDestination `json:"destinations"`
+}
+
+type TransferDestination struct {
 	Address string `json:"address"`
 	Amount  ALF    `json:"amount"`
 }
@@ -130,7 +134,7 @@ type TransferRequest struct {
 func (a *Client) Transfer(walletName string, address string, amount ALF) (Transaction, error) {
 
 	// TODO: run sanity check on address and amount
-	body := TransferRequest{Address: address, Amount: amount}
+	body := TransferRequest{ Destinations: []TransferDestination{{Address: address, Amount: amount}}}
 
 	var transaction Transaction
 	var errorDetail ErrorDetail
