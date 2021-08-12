@@ -23,6 +23,7 @@ var (
 	N = "ALF"
 )
 
+// TODO: should the ALF parsing function return a typed error instead of a bool?
 func AFLFromALFString(amount string) (ALF, bool) {
 	split := strings.Split(amount, ".")
 	if len(split) == 1 {

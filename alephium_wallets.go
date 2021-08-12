@@ -138,7 +138,7 @@ type TransferDestination struct {
 func (a *Client) Transfer(walletName string, address string, amount ALF) (Transaction, error) {
 
 	// TODO: run sanity check on address and amount
-	body := TransferRequest{ Destinations: []TransferDestination{{Address: address, Amount: amount}}}
+	body := TransferRequest{Destinations: []TransferDestination{{Address: address, Amount: amount}}}
 
 	var transaction Transaction
 	var errorDetail ErrorDetail
@@ -207,10 +207,11 @@ func (a *Client) DeleteWallet(walletName string, walletPassword string) (bool, e
 
 // CheckWalletExist is a convenience function which checks if the wallet exists,
 // since this information is based on the error string returned by the API call.
+// TODO: should the "not found" exception being typed?
 func (a *Client) CheckWalletExist(walletName string) (bool, error) {
 	_, err := a.GetWalletStatus(walletName)
 	if err != nil {
-		if strings.HasPrefix(walletName + " not found", err.Error()) {
+		if strings.HasPrefix(walletName+" not found", err.Error()) {
 			return false, nil
 		}
 		return false, err
