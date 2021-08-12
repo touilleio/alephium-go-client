@@ -1,6 +1,12 @@
 Alephium Go Client Changelog
 ====
 
+# Version 2021.08.12
+
+## Improvements
+
+- Add convenience function CheckWalletExist which checks if the wallet exists
+
 # Version 2021.06.25
 
 ## Improvements

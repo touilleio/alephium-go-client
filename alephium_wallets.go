@@ -1,5 +1,9 @@
 package alephium
 
+import (
+	"strings"
+)
+
 // GetWallets
 func (a *Client) GetWallets() ([]WalletInfo, error) {
 	var wallets []WalletInfo
@@ -199,4 +203,17 @@ func (a *Client) DeleteWallet(walletName string, walletPassword string) (bool, e
 		BodyJSON(body).Receive(nil, &errorDetail)
 
 	return true, relevantError(err, errorDetail)
+}
+
+// CheckWalletExist is a convenience function which checks if the wallet exists,
+// since this information is based on the error string returned by the API call.
+func (a *Client) CheckWalletExist(walletName string) (bool, error) {
+	_, err := a.GetWalletStatus(walletName)
+	if err != nil {
+		if strings.HasPrefix(walletName + " not found", err.Error()) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
 }
