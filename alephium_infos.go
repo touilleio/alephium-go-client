@@ -30,7 +30,7 @@ func IsSyncedWithAtLeastOnePeer(peers []InterCliquePeerInfo) bool {
 			atLeastOneSynced = true
 		}
 	}
-	return atLeastOneSynced
+	return atLeastOneSynced || len(peers) == 0
 }
 
 func (a *Client) WaitUntilSyncedWithAtLeastOnePeer() error {

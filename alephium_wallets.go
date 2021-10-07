@@ -17,7 +17,7 @@ func (a *Client) GetWallets() ([]WalletInfo, error) {
 type CreateWalletRequestBody struct {
 	Password           string `json:"password"`
 	IsMiner            bool   `json:"isMiner"`
-	WalletName         string `json:"walletName,omitempty"`
+	WalletName         string `json:"walletName"`
 	MnemonicPassphrase string `json:"mnemonicPassphrase,omitempty"`
 	mMnemonicSize      int    `json:"mnemonicSize,omitempty"`
 }
@@ -26,6 +26,7 @@ type CreateWalletRequestBody struct {
 func (a *Client) CreateWallet(walletName string, password string, isMiner bool, mnemonicPassphrase string) (WalletCreate, error) {
 
 	body := CreateWalletRequestBody{
+
 		Password:           password,
 		IsMiner:            isMiner,
 		WalletName:         walletName,
@@ -130,8 +131,14 @@ type TransferRequest struct {
 }
 
 type TransferDestination struct {
-	Address string `json:"address"`
-	Amount  ALF    `json:"amount"`
+	Address string          `json:"address"`
+	Amount  ALF             `json:"amount"`
+	Tokens  []TransferToken `json:"tokens"`
+}
+
+type TransferToken struct {
+	Id     string `json:"id"`
+	Amount string `json:"amount"`
 }
 
 // Transfer
@@ -217,4 +224,12 @@ func (a *Client) CheckWalletExist(walletName string) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func GetAddressesAsString(walletAddresses []WalletAddress) []string {
+	addresses := make([]string, 0, len(walletAddresses))
+	for _, wa := range walletAddresses {
+		addresses = append(addresses, wa.Address)
+	}
+	return addresses
 }

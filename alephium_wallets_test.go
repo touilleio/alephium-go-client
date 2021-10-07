@@ -8,15 +8,25 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
+	"path/filepath"
 	"testing"
 )
 
 func TestCreateWalletE2E(t *testing.T) {
+
+	configFile, err := filepath.Abs("./user-dev-standalone.conf")
+	if err != nil {
+		t.Error(err)
+	}
+
 	ctx := context.Background()
 	req := testcontainers.ContainerRequest{
-		Image:        "touilleio/alephium:v0.7.8",
+		Image:        "alephium/alephium:v0.11.0",
 		ExposedPorts: []string{"12973/tcp"},
 		WaitingFor:   wait.ForListeningPort("12973/tcp"),
+		BindMounts: map[string]string{
+			configFile: "/alephium-home/.alephium/user.conf",
+		},
 	}
 	alephiumNode, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 		ContainerRequest: req,
@@ -56,7 +66,7 @@ func TestCreateWalletE2E(t *testing.T) {
 	walletAddresses, err := alephiumClient.GetWalletAddresses(newWallet.Name)
 	assert.Nil(t, err)
 
-	log.Printf("name: %s, activeAddress: %s, addresses: %s\n", newWallet.Name, walletAddresses.ActiveAddress, walletAddresses.Addresses)
+	log.Printf("name: %s, activeAddress: %s, addresses: %s\n", newWallet.Name, walletAddresses.ActiveAddress, GetAddressesAsString(walletAddresses.Addresses))
 
 	walletBalances, err := alephiumClient.GetWalletBalances(newWallet.Name)
 	assert.Nil(t, err)
@@ -72,15 +82,19 @@ func TestCreateWalletE2E(t *testing.T) {
 	restoredWallet, err := alephiumClient.RestoreWallet(walletPassword, newWallet.Mnemonic, newWallet.Name, false, "")
 	assert.Nil(t, err)
 
+	walletExist, err := alephiumClient.CheckWalletExist(newWallet.Name)
+	assert.Nil(t, err)
+	assert.True(t, walletExist)
+
 	walletAddresses, err = alephiumClient.GetWalletAddresses(restoredWallet.Name)
 	assert.Nil(t, err)
 	assert.Contains(t, walletAddresses.Addresses, walletAddresses.ActiveAddress)
-	log.Printf("name: %s, activeAddress: %s, addresses: %s\n", restoredWallet.Name, walletAddresses.ActiveAddress, walletAddresses.Addresses)
+	log.Printf("name: %s, activeAddress: %s, addresses: %s\n", restoredWallet.Name, walletAddresses.ActiveAddress, GetAddressesAsString(walletAddresses.Addresses))
 
 	activeAddress, err := alephiumClient.ChangeActiveAddress(restoredWallet.Name, walletAddresses.ActiveAddress)
 	assert.Nil(t, err)
-	assert.Contains(t, walletAddresses.Addresses, activeAddress)
-	log.Printf("name: %s, new activeAddress: %s, addresses: %s\n", restoredWallet.Name, walletAddresses.ActiveAddress, walletAddresses.Addresses)
+	assert.True(t, activeAddress)
+	log.Printf("name: %s, new activeAddress: %s, addresses: %s\n", restoredWallet.Name, walletAddresses.ActiveAddress, GetAddressesAsString(walletAddresses.Addresses))
 
 	derivedAddress, err := alephiumClient.DeriveNextAddress(restoredWallet.Name)
 	assert.Nil(t, err)
@@ -109,7 +123,11 @@ func TestJSONALF(t *testing.T) {
 	amount, ok := AFLFromALFString("12.12")
 	assert.True(t, ok)
 
-	body := TransferRequest{Address: "1234", Amount: amount}
+	body := TransferRequest{
+		Destinations: []TransferDestination{
+			{Address: "1234", Amount: amount},
+		},
+	}
 
 	b, err := json.Marshal(&body)
 	assert.Nil(t, err)

@@ -47,3 +47,9 @@ Test:
 ```
 go test .
 ```
+
+If you want to run your node manually,
+
+```
+docker run -it --rm -v ${PWD}/user-dev-standalone.conf:/alephium-home/.alephium/user.conf -p 12973:12973 alephium/alephium:v0.11.0
+```

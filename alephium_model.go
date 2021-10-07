@@ -54,8 +54,13 @@ type WalletCreate struct {
 }
 
 type WalletAddresses struct {
-	ActiveAddress string   `json:"activeAddress"`
-	Addresses     []string `json:"addresses"`
+	ActiveAddress string          `json:"activeAddress"`
+	Addresses     []WalletAddress `json:"addresses"`
+}
+
+type WalletAddress struct {
+	Address string `json:"address"`
+	Group   int    `json:"group"`
 }
 
 type Wallet struct {
