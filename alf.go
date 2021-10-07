@@ -20,7 +20,7 @@ var (
 	CoinInOneALF         = new(big.Int).SetInt64(OneQuintillionInt64)
 	CoinInNanoALF        = new(big.Int).SetInt64(OneBillionInt64)
 	//N = "א"
-	N = "ALF"
+	N = "ALPH"
 )
 
 // TODO: should the ALF parsing function return a typed error instead of a bool?
