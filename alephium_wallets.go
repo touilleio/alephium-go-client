@@ -133,7 +133,7 @@ type TransferRequest struct {
 type TransferDestination struct {
 	Address string          `json:"address"`
 	Amount  ALF             `json:"amount"`
-	Tokens  []TransferToken `json:"tokens"`
+	Tokens  []TransferToken `json:"tokens,omitempty"`
 }
 
 type TransferToken struct {
