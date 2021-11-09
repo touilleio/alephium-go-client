@@ -26,7 +26,6 @@ type CreateWalletRequestBody struct {
 func (a *Client) CreateWallet(walletName string, password string, isMiner bool, mnemonicPassphrase string) (WalletCreate, error) {
 
 	body := CreateWalletRequestBody{
-
 		Password:           password,
 		IsMiner:            isMiner,
 		WalletName:         walletName,
@@ -115,7 +114,7 @@ func (a *Client) GetWalletBalances(walletName string) (WalletBalances, error) {
 	return walletBalances, relevantError(err, errorDetail)
 }
 
-// GetWalletAddresses
+// GetWalletAddresses lists all the addresses from a wallet
 func (a *Client) GetWalletAddresses(walletName string) (WalletAddresses, error) {
 
 	var walletAddresses WalletAddresses
@@ -126,13 +125,30 @@ func (a *Client) GetWalletAddresses(walletName string) (WalletAddresses, error) 
 	return walletAddresses, relevantError(err, errorDetail)
 }
 
+// GetWalletAddressDetail returns detailed info about a specific address of a wallet
+func (a *Client) GetWalletAddressDetail(walletName string, address string) (AddressDetailResponse, error) {
+
+	var addressDetailResponse AddressDetailResponse
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("wallets/"+walletName+"/addresses/"+address).
+		Receive(&addressDetailResponse, &errorDetail)
+
+	return addressDetailResponse, relevantError(err, errorDetail)
+}
+
+type AddressDetailResponse struct {
+	Address   string `json:"address"`
+	PublicKey string `json:"publicKey"`
+	Group     int    `json:"group"`
+}
+
 type TransferRequest struct {
 	Destinations []TransferDestination `json:"destinations"`
 }
 
-type TransferDestination struct {
-	Address string          `json:"address"`
-	Amount  ALF             `json:"amount"`
+type 	TransferDestination struct {
+	Address string `json:"address"`
+	Amount  ALPH   `json:"amount"`
 }
 
 type TransferToken struct {
@@ -140,8 +156,8 @@ type TransferToken struct {
 	Amount string `json:"amount"`
 }
 
-// Transfer
-func (a *Client) Transfer(walletName string, address string, amount ALF) (Transaction, error) {
+// Transfer transfers ALPH from one wallet to a given address
+func (a *Client) Transfer(walletName string, address string, amount ALPH) (Transaction, error) {
 
 	// TODO: run sanity check on address and amount
 	body := TransferRequest{Destinations: []TransferDestination{{Address: address, Amount: amount}}}
@@ -158,7 +174,7 @@ type SweepAllRequest struct {
 	Address string `json:"toAddress"`
 }
 
-// SweepAll
+// SweepAll transfers all (unlocked) ALPH from a wallet to another address
 func (a *Client) SweepAll(walletName string, toAddress string) (Transaction, error) {
 
 	// TODO: run sanity check on address
@@ -170,6 +186,47 @@ func (a *Client) SweepAll(walletName string, toAddress string) (Transaction, err
 		BodyJSON(body).Receive(&transaction, &errorDetail)
 
 	return transaction, relevantError(err, errorDetail)
+}
+
+type RevealMnemonicRequest	 struct {
+	Password string `json:"password"`
+}
+
+type RevealMnemonicResponse struct {
+	Mnemonic string `json:"mnemonic"`
+}
+
+// RevealWalletMnemonic reveals your mnemonic. Please use with caution!!
+func (a *Client) RevealWalletMnemonic(walletName string, password string) (string, error) {
+
+	body := RevealMnemonicRequest{Password: password}
+
+	var response RevealMnemonicResponse
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Get("wallets/"+walletName+"/reveal-mnemonic").
+		BodyJSON(body).Receive(&response, &errorDetail)
+
+	return response.Mnemonic, relevantError(err, errorDetail)
+}
+type SignRequest struct {
+	Data string `json:"data"`
+}
+
+type SignResponse struct {
+	Signature string `json:"signature"`
+}
+
+// Sign signs the given data and returns the signature
+func (a *Client) Sign(walletName string, data string) (string, error) {
+
+	body := SignRequest{Data: data}
+
+	var response SignResponse
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Post("wallets/"+walletName+"/sign").
+		BodyJSON(body).Receive(&response, &errorDetail)
+
+	return response.Signature, relevantError(err, errorDetail)
 }
 
 // DeriveNextAddress
@@ -231,4 +288,29 @@ func GetAddressesAsString(walletAddresses []WalletAddress) []string {
 		addresses = append(addresses, wa.Address)
 	}
 	return addresses
+}
+
+type MinerWalletAddresses struct {
+	Addresses []WalletAddress `json:"addresses"`
+}
+
+// GetMinerWalletAddresses lists all the addresses from a miner wallet
+func (a *Client) GetMinerWalletAddresses(walletName string) ([]MinerWalletAddresses, error) {
+
+	var minerAddresses []MinerWalletAddresses
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Path("wallets/"+walletName+"/miner-addresses").
+		Receive(&minerAddresses, &errorDetail)
+
+	return minerAddresses, relevantError(err, errorDetail)
+}
+
+// DeriveNextMinerAddresses derivates the next miner address
+func (a *Client) DeriveNextMinerAddresses(walletName string) ([]WalletAddress, error) {
+	var addresses []WalletAddress
+	var errorDetail ErrorDetail
+	_, err := a.slingClient.New().Post("wallets/"+walletName+"/derive-next-miner-addresses").
+		Receive(&addresses, &errorDetail)
+
+	return addresses, relevantError(err, errorDetail)
 }

@@ -1,6 +1,7 @@
 package alephium
 
 import (
+	"context"
 	"github.com/sqooba/go-common/logging"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -20,6 +21,7 @@ func TestTransactions(t *testing.T) {
 	transactionStatus, err := alephiumClient.GetTransactionStatus(txId, fromGroup, toGroup)
 	log.Debugf("transactionStatus is %v", transactionStatus)
 
-	err = alephiumClient.WaitForTransactionConfirmed(txId, fromGroup, toGroup)
+	ok, err := alephiumClient.WaitForTransactionConfirmed(context.Background(), txId, fromGroup, toGroup)
 	assert.Nil(t, err)
+	assert.True(t, ok)
 }

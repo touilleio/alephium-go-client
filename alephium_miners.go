@@ -1,15 +1,11 @@
 package alephium
 
-import (
-	"fmt"
-)
-
-// StartMining
+// StartMining starts the built-in CPU miner. Mostly for tests
 func (a *Client) StartMining() (bool, error) {
 	return a.miningAction("start-mining")
 }
 
-// StopMining
+// StopMining stops the built-in CPU miner
 func (a *Client) StopMining() (bool, error) {
 	return a.miningAction("stop-mining")
 }
@@ -35,7 +31,7 @@ type UpdateMinersAddressesBodyParams struct {
 	Addresses []string `json:"addresses"`
 }
 
-// UpdateMinersAddresses
+// UpdateMinersAddresses updates the miner addresses
 func (a *Client) UpdateMinersAddresses(addresses []string) error {
 
 	var errorDetail ErrorDetail
@@ -48,7 +44,7 @@ func (a *Client) UpdateMinersAddresses(addresses []string) error {
 	return relevantError(err, errorDetail)
 }
 
-// GetMinersAddresses
+// GetMinersAddresses gets the current miner's addresses
 func (a *Client) GetMinersAddresses() (MinersAddresses, error) {
 
 	var minersAddresses MinersAddresses
@@ -57,14 +53,4 @@ func (a *Client) GetMinersAddresses() (MinersAddresses, error) {
 		Receive(&minersAddresses, &errorDetail)
 
 	return minersAddresses, relevantError(err, errorDetail)
-}
-
-// GetBlockCandidate
-func (a *Client) GetBlockCandidate() error {
-	return fmt.Errorf("not implemented yet")
-}
-
-// SubmitNewBlock
-func (a *Client) SubmitNewBlock() error {
-	return fmt.Errorf("not implemented yet")
 }

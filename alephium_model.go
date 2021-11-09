@@ -24,7 +24,7 @@ func (e ErrorDetail) Error() string {
 }
 
 type WalletBalances struct {
-	TotalBalance ALF              `json:"totalBalance"`
+	TotalBalance ALPH             `json:"totalBalance"`
 	Balances     []AddressBalance `json:"balances"`
 }
 
@@ -37,7 +37,7 @@ func (b WalletBalances) GetTotalBalance() (*big.Int, bool) {
 
 type AddressBalance struct {
 	Address string `json:"address"`
-	Balance ALF    `json:"balance"`
+	Balance ALPH   `json:"balance"`
 }
 
 func (b AddressBalance) GetBalance() (*big.Int, bool) {
@@ -124,9 +124,11 @@ type TransactionStatus struct {
 }
 
 type AddressUtxoBalance struct {
-	Balance       ALF `json:"balance"`
-	LockedBalance ALF `json:"lockedBalance"`
-	UtxoNum       int `json:"utxoNum"`
+	Balance       ALPH `json:"balance"`
+	BalanceHint   string `json:"balanceHint"`
+	LockedBalance ALPH `json:"lockedBalance"`
+	LockedBalanceHint string `json:"lockedBalanceHint"`
+	UtxoNum       int  `json:"utxoNum"`
 }
 
 type AddressGroup struct {

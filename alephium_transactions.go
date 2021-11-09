@@ -1,6 +1,7 @@
 package alephium
 
 import (
+	"context"
 	"fmt"
 	"time"
 )
@@ -48,21 +49,27 @@ func (a *Client) GetTransactionStatus(transactionId string, fromGroup int, toGro
 }
 
 // WaitForTransactionConfirmed
-func (a *Client) WaitForTransactionConfirmed(transactionId string, fromGroup int, toGroup int) error {
-	return a.WaitForTransactionStatus(TxConfirmed, transactionId, fromGroup, toGroup)
+func (a *Client) WaitForTransactionConfirmed(ctx context.Context, transactionId string, fromGroup int, toGroup int) (bool, error) {
+	return a.WaitForTransactionStatus(ctx, TxConfirmed, transactionId, fromGroup, toGroup)
 }
 
 // WaitForTransactionStatus
-func (a *Client) WaitForTransactionStatus(status string, transactionId string, fromGroup int, toGroup int) error {
+func (a *Client) WaitForTransactionStatus(ctx context.Context, status string, transactionId string, fromGroup int, toGroup int) (bool, error) {
 	txStatus := "unknown"
 	for {
+		select {
+		case <-ctx.Done():
+			return false, ctx.Err()
+		default:
+
+		}
 		tx, err := a.GetTransactionStatus(transactionId, fromGroup, toGroup)
 		if err != nil {
-			return err
+			return false, err
 		}
 		txStatus = tx.Type
 		if txStatus == status {
-			return nil
+			return true, nil
 		} else {
 			a.log.Debugf("Tx %s not %s yet, sleeping %s", transactionId, status, a.sleepTime)
 			time.Sleep(a.sleepTime)

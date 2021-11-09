@@ -1,10 +1,11 @@
 package alephium
 
 import (
+	"context"
 	"time"
 )
 
-// GetSelfCliqueInfos
+// GetSelfCliqueInfos gets the infos about the current clique
 func (a *Client) GetSelfCliqueInfos() (SelfCliqueInfo, error) {
 	var selfCliqueInfos SelfCliqueInfo
 	var errorDetail ErrorDetail
@@ -13,7 +14,7 @@ func (a *Client) GetSelfCliqueInfos() (SelfCliqueInfo, error) {
 	return selfCliqueInfos, relevantError(err, errorDetail)
 }
 
-// GetInterCliquePeerInfos
+// GetInterCliquePeerInfos gets cliques about the other cliques connected to the current cllique
 func (a *Client) GetInterCliquePeerInfos() ([]InterCliquePeerInfo, error) {
 	var interCliquePeerInfos []InterCliquePeerInfo
 	var errorDetail ErrorDetail
@@ -23,6 +24,8 @@ func (a *Client) GetInterCliquePeerInfos() ([]InterCliquePeerInfo, error) {
 	return interCliquePeerInfos, relevantError(err, errorDetail)
 }
 
+// IsSyncedWithAtLeastOnePeer checks if the clique is connected with at least one clique
+// or the list of peers is empty
 func IsSyncedWithAtLeastOnePeer(peers []InterCliquePeerInfo) bool {
 	atLeastOneSynced := false
 	for _, peer := range peers {
@@ -33,15 +36,23 @@ func IsSyncedWithAtLeastOnePeer(peers []InterCliquePeerInfo) bool {
 	return atLeastOneSynced || len(peers) == 0
 }
 
-func (a *Client) WaitUntilSyncedWithAtLeastOnePeer() error {
+// WaitUntilSyncedWithAtLeastOnePeer waits until the clique is connected to at least one clique
+// or the context is done.
+func (a *Client) WaitUntilSyncedWithAtLeastOnePeer(ctx context.Context) (bool, error) {
 	for isSynced := false; ; {
+		select {
+		case <-ctx.Done():
+			return false, ctx.Err()
+		default:
+
+		}
 		var err error
 		isSynced, err = a.IsSynced()
 		if err != nil {
-			return err
+			return false, err
 		}
 		if isSynced {
-			return nil
+			return true, nil
 		} else {
 			a.log.Debugf("Not sync'ed yet, sleeping %s", a.sleepTime)
 			time.Sleep(a.sleepTime)
@@ -49,6 +60,7 @@ func (a *Client) WaitUntilSyncedWithAtLeastOnePeer() error {
 	}
 }
 
+// IsSynced checks if the cilque is synced
 func (a *Client) IsSynced() (bool, error) {
 	peers, err := a.GetInterCliquePeerInfos()
 	if err != nil {
@@ -58,7 +70,7 @@ func (a *Client) IsSynced() (bool, error) {
 	return isSynced, nil
 }
 
-// GetDiscoveredNeighbors
+// GetDiscoveredNeighbors gets the discovered neighbors
 func (a *Client) GetDiscoveredNeighbors() ([]DiscoveredNeighbor, error) {
 	var neighbors []DiscoveredNeighbor
 	var errorDetail ErrorDetail
@@ -67,7 +79,7 @@ func (a *Client) GetDiscoveredNeighbors() ([]DiscoveredNeighbor, error) {
 	return neighbors, relevantError(err, errorDetail)
 }
 
-// GetMisbehaviors
+// GetMisbehaviors gets the misbehaving neighbors
 func (a *Client) GetMisbehaviors() ([]Misbehavior, error) {
 	var misbehaviors []Misbehavior
 	var errorDetail ErrorDetail
@@ -81,7 +93,7 @@ type UnbanMisbehaviorsBodyParams struct {
 	Peers []string `json:"peers"`
 }
 
-// UnbanMisbehaviors
+// UnbanMisbehaviors unbans misbehaving neighbors
 func (a *Client) UnbanMisbehaviors(peers []string) (bool, error) {
 	var errorDetail ErrorDetail
 	params := UnbanMisbehaviorsBodyParams{
@@ -93,7 +105,7 @@ func (a *Client) UnbanMisbehaviors(peers []string) (bool, error) {
 	return true, relevantError(err, errorDetail)
 }
 
-// GetNodeInfos
+// GetNodeInfos get the info of the node
 func (a *Client) GetNodeInfos() (NodeInfo, error) {
 	var nodeInfo NodeInfo
 	var errorDetail ErrorDetail
@@ -101,5 +113,3 @@ func (a *Client) GetNodeInfos() (NodeInfo, error) {
 		Receive(&nodeInfo, &errorDetail)
 	return nodeInfo, relevantError(err, errorDetail)
 }
-
-// gasPrice?
