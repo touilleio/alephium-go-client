@@ -97,7 +97,7 @@ type UnbanMisbehaviorsBodyParams struct {
 func (a *Client) UnbanMisbehaviors(peers []string) (bool, error) {
 	var errorDetail ErrorDetail
 	params := UnbanMisbehaviorsBodyParams{
-		Type:  "uban",
+		Type:  "unban",
 		Peers: peers,
 	}
 	_, err := a.slingClient.New().Post("infos/misbehaviors").
