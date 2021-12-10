@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func TestALFConstruct(t *testing.T) {
+func TestALPHConstruct(t *testing.T) {
 	a1, ok := ALPHFromALPHString("12")
 	assert.True(t, ok)
 	assert.Equal(t, 12.000000000, a1.FloatALPH())
@@ -23,18 +23,18 @@ func TestALFConstruct(t *testing.T) {
 	assert.Equal(t, "12", a2.String())
 }
 
-func TestZeroALF(t *testing.T) {
+func TestZeroALPH(t *testing.T) {
 	a1 := ALPH{}
 	assert.Equal(t, "0", a1.String())
 }
 
-func TestALFConstructWithDot(t *testing.T) {
+func TestALPHConstructWithDot(t *testing.T) {
 	a1, ok := ALPHFromALPHString("12.12")
 	assert.True(t, ok)
 	assert.Equal(t, 12.120000000, a1.FloatALPH())
 }
 
-func TestALFAdd(t *testing.T) {
+func TestALPHAdd(t *testing.T) {
 	a1, ok := ALPHFromALPHString("10.1")
 	assert.True(t, ok)
 	a2, ok := ALPHFromALPHString("2.02")
@@ -47,7 +47,7 @@ func TestALFAdd(t *testing.T) {
 	assert.Equal(t, res, a3)
 }
 
-func TestALFSub(t *testing.T) {
+func TestALPHSub(t *testing.T) {
 	a1, ok := ALPHFromALPHString("10")
 	assert.True(t, ok)
 	a2, ok := ALPHFromALPHString("2")
@@ -60,7 +60,7 @@ func TestALFSub(t *testing.T) {
 	assert.Equal(t, res, a1)
 }
 
-func TestALFMul(t *testing.T) {
+func TestALPHMul(t *testing.T) {
 	a1, ok := ALPHFromALPHString("10")
 	assert.True(t, ok)
 	a2, ok := ALPHFromALPHString("2")
@@ -76,7 +76,7 @@ func TestALFMul(t *testing.T) {
 	assert.Equal(t, res, a3)
 }
 
-func TestALFDiv(t *testing.T) {
+func TestALPHDiv(t *testing.T) {
 	a1, ok := ALPHFromALPHString("10")
 	assert.True(t, ok)
 	a2, ok := ALPHFromALPHString("2")
@@ -92,7 +92,7 @@ func TestALFDiv(t *testing.T) {
 	assert.Equal(t, res, a2)
 }
 
-func TestALFDecode(t *testing.T) {
+func TestALPHDecode(t *testing.T) {
 	a1, ok := ALPHFromALPHString("10")
 	assert.True(t, ok)
 	a2, ok := ALPHFromALPHString("2")
@@ -110,35 +110,35 @@ func TestALFDecode(t *testing.T) {
 
 func TestRoundAmount(t *testing.T) {
 	rand.Seed(time.Now().UnixNano() + int64(os.Getpid()))
-	alf := RandomALPHAmount(100)
-	fmt.Printf("%s", alf.PrettyString())
+	alph := RandomALPHAmount(100)
+	fmt.Printf("%s", alph.PrettyString())
 
-	TenALF, ok := ALPHFromALPHString("10")
+	TenALPH, ok := ALPHFromALPHString("10")
 	assert.True(t, ok)
 
 	// just to ensure at least 10 ALPH
-	alf = alf.Add(TenALF)
-	assert.True(t, alf.Cmp(TenALF) > 0)
+	alph = alph.Add(TenALPH)
+	assert.True(t, alph.Cmp(TenALPH) > 0)
 	var finalTxAmount ALPH
-	fiveALF := TenALF.Divide(2)
-	txAmount := alf.Subtract(fiveALF)
-	if txAmount.Cmp(TenALF) > 0 {
-		finalTxAmount = TenALF
+	fiveALPH := TenALPH.Divide(2)
+	txAmount := alph.Subtract(fiveALPH)
+	if txAmount.Cmp(TenALPH) > 0 {
+		finalTxAmount = TenALPH
 	} else {
 		finalTxAmount = txAmount
 	}
 
-	assert.True(t, finalTxAmount.Cmp(TenALF) <= 0)
+	assert.True(t, finalTxAmount.Cmp(TenALPH) <= 0)
 }
 
 func TestNanoAmount(t *testing.T) {
 	rand.Seed(time.Now().UnixNano() + int64(os.Getpid()))
-	alf := RandomNanoALPHAmount(int(OneBillionInt64))
-	fmt.Printf("%s\n", alf.PrettyString())
-	fmt.Printf("%.4f\n", alf.FloatALPH())
+	alph := RandomNanoALPHAmount(int(OneBillionInt64))
+	fmt.Printf("%s\n", alph.PrettyString())
+	fmt.Printf("%.4f\n", alph.FloatALPH())
 
-	alf = RandomNanoALPHAmount(10000000)
-	fmt.Printf("%s\n", alf.PrettyString())
+	alph = RandomNanoALPHAmount(10000000)
+	fmt.Printf("%s\n", alph.PrettyString())
 }
 
 type TestJsonStruct struct {
@@ -147,10 +147,10 @@ type TestJsonStruct struct {
 
 func TestJSON(t *testing.T) {
 	rand.Seed(time.Now().UnixNano() + int64(os.Getpid()))
-	alf := RandomNanoALPHAmount(int(OneBillionInt64))
+	alph := RandomNanoALPHAmount(int(OneBillionInt64))
 
 	j1 := TestJsonStruct{
-		Amount: alf,
+		Amount: alph,
 	}
 
 	b, err := json.Marshal(j1)

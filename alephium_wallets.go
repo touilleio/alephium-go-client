@@ -22,7 +22,7 @@ type CreateWalletRequestBody struct {
 	mMnemonicSize      int    `json:"mnemonicSize,omitempty"`
 }
 
-// CreateWallet
+// CreateWallet creates a new wallet, generating mnemonic while doing so
 func (a *Client) CreateWallet(walletName string, password string, isMiner bool, mnemonicPassphrase string) (WalletCreate, error) {
 
 	body := CreateWalletRequestBody{
@@ -89,12 +89,17 @@ func (a *Client) LockWallet(walletName string) (bool, error) {
 
 type WalletPasswordRequestBody struct {
 	Password string `json:"password"`
+	MnemonicPassphrase string `json:"mnemonicPassphrase,omitempty"`
 }
 
-// UnlockWallet
-func (a *Client) UnlockWallet(walletName string, password string) (bool, error) {
+// UnlockWallet unlocks wallet with the provided password and optional passphrase.
+// Retruns true if the wallet got successfully unlocked, false when the wallet was already unlocked
+func (a *Client) UnlockWallet(walletName string, password string, mnemonicPassphrase string) (bool, error) {
 
-	body := WalletPasswordRequestBody{Password: password}
+	body := WalletPasswordRequestBody{
+		Password: password,
+		MnemonicPassphrase: mnemonicPassphrase,
+	}
 
 	var errorDetail ErrorDetail
 	_, err := a.slingClient.New().Post("wallets/"+walletName+"/unlock").

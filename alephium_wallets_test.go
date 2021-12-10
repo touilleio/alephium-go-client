@@ -33,7 +33,7 @@ func setupContainer(ctx context.Context) (testcontainers.Container, nat.Port, st
 	}
 
 	req := testcontainers.ContainerRequest{
-		Image:        "alephium/alephium:v1.0.0",
+		Image:        "alephium/alephium:v1.1.8",
 		ExposedPorts: []string{"12973/tcp"},
 		WaitingFor:   wait.ForListeningPort("12973/tcp"),
 		BindMounts: map[string]string{
@@ -77,7 +77,6 @@ func TestCreateWalletE2E(t *testing.T) {
 	sync, err := alephiumClient.WaitUntilSyncedWithAtLeastOnePeer(context.Background())
 	assert.Nil(t, err)
 	assert.True(t, sync)
-
 
 	genesisWalletName := "GenesisWallet-01"
 	genesisWalletMnemonics := "convince crowd interest pen question tail curtain tenant buffalo advice mosquito position obey loyal gain local ecology tiger future turtle depend champion essence disorder"
@@ -154,7 +153,7 @@ func TestCreateWalletE2E(t *testing.T) {
 	assert.True(t, walletStatus.Locked)
 	assert.Equal(t, restoredWallet.Name, walletStatus.Name)
 
-	unlocked, err := alephiumClient.UnlockWallet(restoredWallet.Name, walletPassword)
+	unlocked, err := alephiumClient.UnlockWallet(restoredWallet.Name, walletPassword, "")
 	assert.Nil(t, err)
 	assert.True(t, unlocked)
 
@@ -171,6 +170,51 @@ func TestCreateWalletE2E(t *testing.T) {
 	signature, err := alephiumClient.Sign(restoredWallet.Name, encodedStr)
 	assert.Nil(t, err)
 	log.Infof("%s", signature)
+}
+
+func TestCreateWalletWithPassphraseE2E(t *testing.T) {
+
+	log := logging.NewLogger()
+	_ = logging.SetLogLevel(log, "debug")
+
+	ctx, _ := context.WithCancel(context.Background())
+	alephiumNode, port, walletFolder, err := setupContainer(ctx)
+	defer tearDownContainer(ctx, alephiumNode, walletFolder)
+
+	walletPassword := "dummy-password"
+	mnemonicPassphrase := "dummy-passphrase"
+	walletName := "test-wallet"
+	alephiumClient, err := New("http://localhost:"+port.Port(), log)
+	assert.Nil(t, err)
+
+	sync, err := alephiumClient.WaitUntilSyncedWithAtLeastOnePeer(context.Background())
+	assert.Nil(t, err)
+	assert.True(t, sync)
+
+	newWallet, err := alephiumClient.CreateWallet(walletName, walletPassword, false, mnemonicPassphrase)
+	assert.Nil(t, err)
+	assert.Nil(t, err)
+
+	log.Printf("name: %s, mnemonic: %s\n", newWallet.Name, newWallet.Mnemonic)
+
+	wallets, err := alephiumClient.GetWallets()
+	assert.Nil(t, err)
+
+	foundNewWallet := false
+	for _, wallet := range wallets {
+		if wallet.Name == newWallet.Name {
+			foundNewWallet = true
+		}
+	}
+	assert.True(t, foundNewWallet)
+
+	ok, err := alephiumClient.LockWallet(newWallet.Name)
+	assert.Nil(t, err)
+	assert.True(t, ok)
+
+	ok, err = alephiumClient.UnlockWallet(newWallet.Name, walletPassword, mnemonicPassphrase)
+	assert.Nil(t, err)
+	assert.True(t, ok)
 }
 
 func TestJSONALF(t *testing.T) {
