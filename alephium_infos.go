@@ -88,16 +88,26 @@ func (a *Client) GetMisbehaviors() ([]Misbehavior, error) {
 	return misbehaviors, relevantError(err, errorDetail)
 }
 
-type UnbanMisbehaviorsBodyParams struct {
+type MisbehaviorsBodyParams struct {
 	Type  string   `json:"type"`
 	Peers []string `json:"peers"`
 }
 
 // UnbanMisbehaviors unbans misbehaving neighbors
 func (a *Client) UnbanMisbehaviors(peers []string) (bool, error) {
+	return a.Misbehaviors("unban", peers)
+}
+
+// BanMisbehaviors bans misbehaving neighbors
+func (a *Client) BanMisbehaviors(peers []string) (bool, error) {
+	return a.Misbehaviors("ban", peers)
+}
+
+// Misbehaviors calls thee  misbehaviors endpoint
+func (a *Client) Misbehaviors(ptype string, peers []string) (bool, error) {
 	var errorDetail ErrorDetail
-	params := UnbanMisbehaviorsBodyParams{
-		Type:  "unban",
+	params := MisbehaviorsBodyParams{
+		Type:  ptype,
 		Peers: peers,
 	}
 	_, err := a.slingClient.New().Post("infos/misbehaviors").
