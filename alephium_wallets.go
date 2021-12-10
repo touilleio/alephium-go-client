@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-// GetWallets
+// GetWallets returns the list of wallet present on the full node
 func (a *Client) GetWallets() ([]WalletInfo, error) {
 	var wallets []WalletInfo
 	var errorDetail ErrorDetail
@@ -19,7 +19,7 @@ type CreateWalletRequestBody struct {
 	IsMiner            bool   `json:"isMiner"`
 	WalletName         string `json:"walletName"`
 	MnemonicPassphrase string `json:"mnemonicPassphrase,omitempty"`
-	mMnemonicSize      int    `json:"mnemonicSize,omitempty"`
+	MnemonicSize       int    `json:"mnemonicSize,omitempty"`
 }
 
 // CreateWallet creates a new wallet, generating mnemonic while doing so
@@ -48,7 +48,7 @@ type RestoreWalletRequestBody struct {
 	MnemonicPassphrase string `json:"mnemonicPassphrase,omitempty"`
 }
 
-// RestoreWallet
+// RestoreWallet creates a wallet with provided mnemonics (unlike CreateWallet which generates new mnemonics)
 func (a *Client) RestoreWallet(password string, mnemonic string, walletName string,
 	isMiner bool, mnemonicPassphrase string) (Wallet, error) {
 
@@ -68,7 +68,7 @@ func (a *Client) RestoreWallet(password string, mnemonic string, walletName stri
 	return wallet, relevantError(err, errorDetail)
 }
 
-// GetWalletStatus
+// GetWalletStatus returns the status of a given wallet
 func (a *Client) GetWalletStatus(walletName string) (WalletInfo, error) {
 	var walletInfo WalletInfo
 	var errorDetail ErrorDetail
@@ -77,7 +77,7 @@ func (a *Client) GetWalletStatus(walletName string) (WalletInfo, error) {
 	return walletInfo, relevantError(err, errorDetail)
 }
 
-// LockWallet
+// LockWallet locks a given wallet. Returns false if the wallet was already locked.
 func (a *Client) LockWallet(walletName string) (bool, error) {
 
 	var errorDetail ErrorDetail
@@ -93,7 +93,7 @@ type WalletPasswordRequestBody struct {
 }
 
 // UnlockWallet unlocks wallet with the provided password and optional passphrase.
-// Retruns true if the wallet got successfully unlocked, false when the wallet was already unlocked
+// Returns true if the wallet got successfully unlocked, false when the wallet was already unlocked
 func (a *Client) UnlockWallet(walletName string, password string, mnemonicPassphrase string) (bool, error) {
 
 	body := WalletPasswordRequestBody{
@@ -108,7 +108,7 @@ func (a *Client) UnlockWallet(walletName string, password string, mnemonicPassph
 	return true, relevantError(err, errorDetail)
 }
 
-// GetWalletBalances
+// GetWalletBalances returns the balance of all the addresses inside the wallet.
 func (a *Client) GetWalletBalances(walletName string) (WalletBalances, error) {
 
 	var walletBalances WalletBalances
@@ -234,7 +234,7 @@ func (a *Client) Sign(walletName string, data string) (string, error) {
 	return response.Signature, relevantError(err, errorDetail)
 }
 
-// DeriveNextAddress
+// DeriveNextAddress derives the next address
 func (a *Client) DeriveNextAddress(walletName string) (Address, error) {
 	var address Address
 	var errorDetail ErrorDetail
@@ -248,7 +248,7 @@ type AddressBodyRequest struct {
 	Address string `json:"address"`
 }
 
-// ChangeActiveAddress
+// ChangeActiveAddress changes the active address of the wallet. Has no effect on non-miner wallet.
 func (a *Client) ChangeActiveAddress(walletName string, activeAddress string) (bool, error) {
 
 	body := AddressBodyRequest{Address: activeAddress}
@@ -261,7 +261,7 @@ func (a *Client) ChangeActiveAddress(walletName string, activeAddress string) (b
 	return true, relevantError(err, errorDetail)
 }
 
-// DeleteWallet
+// DeleteWallet deletes a wallet.
 func (a *Client) DeleteWallet(walletName string, walletPassword string) (bool, error) {
 
 	body := WalletPasswordRequestBody{Password: walletPassword}
@@ -310,7 +310,7 @@ func (a *Client) GetMinerWalletAddresses(walletName string) ([]MinerWalletAddres
 	return minerAddresses, relevantError(err, errorDetail)
 }
 
-// DeriveNextMinerAddresses derivates the next miner address
+// DeriveNextMinerAddresses derives the next miner address
 func (a *Client) DeriveNextMinerAddresses(walletName string) ([]WalletAddress, error) {
 	var addresses []WalletAddress
 	var errorDetail ErrorDetail
