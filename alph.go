@@ -16,9 +16,9 @@ type ALPH struct {
 var (
 	OneQuintillionString = "1000000000000000000"
 	OneQuintillionInt64  = int64(1000000000000000000)
-	OneBillionInt64 = int64(1000000000)
-	CoinInOneALPH  = new(big.Int).SetInt64(OneQuintillionInt64)
-	CoinInNanoALPH = new(big.Int).SetInt64(OneBillionInt64)
+	OneBillionInt64      = int64(1000000000)
+	CoinInOneALPH        = new(big.Int).SetInt64(OneQuintillionInt64)
+	CoinInNanoALPH       = new(big.Int).SetInt64(OneBillionInt64)
 	//N = "א"
 	N = "ALPH"
 )

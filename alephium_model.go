@@ -101,7 +101,11 @@ type NodeAddress struct {
 }
 
 type NodeInfo struct {
-	IsMining bool `json:"isMining"`
+	Version   string `json:"version"`
+	BuildInfo struct {
+		ReleaseVersion string `json:"releaseVersion"`
+		Commit         string `json:"commit"`
+	} `json:"buildInfo"`
 }
 
 type Transaction struct {
@@ -124,11 +128,11 @@ type TransactionStatus struct {
 }
 
 type AddressUtxoBalance struct {
-	Balance       ALPH `json:"balance"`
-	BalanceHint   string `json:"balanceHint"`
-	LockedBalance ALPH `json:"lockedBalance"`
+	Balance           ALPH   `json:"balance"`
+	BalanceHint       string `json:"balanceHint"`
+	LockedBalance     ALPH   `json:"lockedBalance"`
 	LockedBalanceHint string `json:"lockedBalanceHint"`
-	UtxoNum       int  `json:"utxoNum"`
+	UtxoNum           int    `json:"utxoNum"`
 }
 
 type AddressGroup struct {

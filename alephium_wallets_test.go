@@ -16,6 +16,11 @@ import (
 	"testing"
 )
 
+var (
+	AlephiumVersion = "1.1.8"
+	AlephiumImage   = "alephium/alephium:v" + AlephiumVersion
+)
+
 func setupContainer(ctx context.Context) (testcontainers.Container, nat.Port, string, error) {
 
 	configFile, err := filepath.Abs("./user-dev-standalone.conf")
@@ -33,11 +38,11 @@ func setupContainer(ctx context.Context) (testcontainers.Container, nat.Port, st
 	}
 
 	req := testcontainers.ContainerRequest{
-		Image:        "alephium/alephium:v1.1.8",
+		Image:        AlephiumImage,
 		ExposedPorts: []string{"12973/tcp"},
 		WaitingFor:   wait.ForListeningPort("12973/tcp"),
 		BindMounts: map[string]string{
-			configFile: "/alephium-home/.alephium/user.conf",
+			configFile:   "/alephium-home/.alephium/user.conf",
 			walletFolder: "/alephium-home/.alephium-wallets",
 		},
 	}

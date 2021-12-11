@@ -88,7 +88,7 @@ func (a *Client) LockWallet(walletName string) (bool, error) {
 }
 
 type WalletPasswordRequestBody struct {
-	Password string `json:"password"`
+	Password           string `json:"password"`
 	MnemonicPassphrase string `json:"mnemonicPassphrase,omitempty"`
 }
 
@@ -97,7 +97,7 @@ type WalletPasswordRequestBody struct {
 func (a *Client) UnlockWallet(walletName string, password string, mnemonicPassphrase string) (bool, error) {
 
 	body := WalletPasswordRequestBody{
-		Password: password,
+		Password:           password,
 		MnemonicPassphrase: mnemonicPassphrase,
 	}
 
@@ -151,7 +151,7 @@ type TransferRequest struct {
 	Destinations []TransferDestination `json:"destinations"`
 }
 
-type 	TransferDestination struct {
+type TransferDestination struct {
 	Address string `json:"address"`
 	Amount  ALPH   `json:"amount"`
 }
@@ -193,7 +193,7 @@ func (a *Client) SweepAll(walletName string, toAddress string) (Transaction, err
 	return transaction, relevantError(err, errorDetail)
 }
 
-type RevealMnemonicRequest	 struct {
+type RevealMnemonicRequest struct {
 	Password string `json:"password"`
 }
 
@@ -213,6 +213,7 @@ func (a *Client) RevealWalletMnemonic(walletName string, password string) (strin
 
 	return response.Mnemonic, relevantError(err, errorDetail)
 }
+
 type SignRequest struct {
 	Data string `json:"data"`
 }
