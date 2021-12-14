@@ -1,6 +1,12 @@
 Alephium Go Client Changelog
 ====
 
+# Version 2021.12.12
+
+## Improvements
+
+- Add support for API key
+
 # Version 2021.08.12
 
 ## Improvements

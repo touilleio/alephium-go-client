@@ -9,19 +9,33 @@ import (
 
 type Client struct {
 	endpointURI string
+	apiToken    string
 	oldClient   *http.Client
 	slingClient *sling.Sling
 	log         *logrus.Logger
 	sleepTime   time.Duration
 }
 
+const (
+	ApiKeyHeader = "X-API-KEY"
+)
+
 func New(alephiumEndpoint string, log *logrus.Logger) (*Client, error) {
+	return NewWithApiKey(alephiumEndpoint, "", log)
+}
+
+func NewWithApiKey(alephiumEndpoint string, apiKey string, log *logrus.Logger) (*Client, error) {
 
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}
 
 	slingClient := sling.New().Client(client).Base(alephiumEndpoint)
+
+	if apiKey != "" {
+		slingClient = slingClient.Add(ApiKeyHeader, apiKey)
+	}
+
 	alephiumClient := &Client{
 		endpointURI: alephiumEndpoint,
 		oldClient:   client,

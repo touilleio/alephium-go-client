@@ -17,8 +17,12 @@ import (
 )
 
 var (
-	AlephiumVersion = "1.1.8"
+	AlephiumVersion = "1.1.10"
 	AlephiumImage   = "alephium/alephium:v" + AlephiumVersion
+
+	TestGenesisWalletName      = "GenesisWallet-01"
+	TestGenesisWalletMnemonics = "convince crowd interest pen question tail curtain tenant buffalo advice mosquito position obey loyal gain local ecology tiger future turtle depend champion essence disorder"
+	TestApiKey = "MK03TBJOuLWiKb9MrUBQ8pT5MbOYlOVDfIcfkyjP1WabgOVSdQneS6do7JBeRUPS"
 )
 
 func setupContainer(ctx context.Context) (testcontainers.Container, nat.Port, string, error) {
@@ -51,6 +55,7 @@ func setupContainer(ctx context.Context) (testcontainers.Container, nat.Port, st
 		Started:          true,
 	})
 	if err != nil {
+		fmt.Printf("Err = %v", err)
 		return nil, "", "", err
 	}
 	port, err := alephiumNode.MappedPort(ctx, "12973/tcp")
@@ -76,16 +81,14 @@ func TestCreateWalletE2E(t *testing.T) {
 
 	walletPassword := "dummy-password"
 	walletName := "test-wallet"
-	alephiumClient, err := New("http://localhost:"+port.Port(), log)
+	alephiumClient, err := NewWithApiKey("http://localhost:"+port.Port(), TestApiKey, log)
 	assert.Nil(t, err)
 
 	sync, err := alephiumClient.WaitUntilSyncedWithAtLeastOnePeer(context.Background())
 	assert.Nil(t, err)
 	assert.True(t, sync)
 
-	genesisWalletName := "GenesisWallet-01"
-	genesisWalletMnemonics := "convince crowd interest pen question tail curtain tenant buffalo advice mosquito position obey loyal gain local ecology tiger future turtle depend champion essence disorder"
-	genesisWallet, err := alephiumClient.RestoreWallet(walletPassword, genesisWalletMnemonics, genesisWalletName, true, "")
+	genesisWallet, err := alephiumClient.RestoreWallet(walletPassword, TestGenesisWalletMnemonics, TestGenesisWalletName, true, "")
 	assert.Nil(t, err)
 
 	genesisWalletAddresses, err := alephiumClient.GetWalletAddresses(genesisWallet.Name)
