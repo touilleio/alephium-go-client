@@ -2,7 +2,7 @@ package alephium
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"time"
 )
 
@@ -10,19 +10,73 @@ const (
 	TxConfirmed = "confirmed"
 )
 
-// GetUnconfirmedTransactions
+// GetUnconfirmedTransactions gets the list of unconfirmed transactions
 func (a *Client) GetUnconfirmedTransactions() error {
-	return fmt.Errorf("not implemented yet")
+
+	var errorDetail ErrorDetail
+
+	_, err := a.slingClient.New().Get("transactions/unconfirmed").
+		Receive(nil, &errorDetail)
+
+	return relevantError(err, errorDetail)
 }
 
-// BuildTransaction
-func (a *Client) BuildTransaction(hash string) error {
-	return fmt.Errorf("not implemented yet")
+type BuildTransactionBodyRequest struct {
+	FromPublicKey string `json:"fromPublicKey"`
+	Destinations  []TransactionDestination `json:"destinations"`
 }
 
-// SendTransaction
-func (a *Client) SendTransaction(transactionId string) error {
-	return fmt.Errorf("not implemented yet")
+type TransactionDestination struct {
+	Address string `json:"address"`
+	Amount  ALPH   `json:"amount"`
+}
+
+type UnsignedTransaction struct {
+	UnsignedTx string `json:"unsignedTx"`
+	TxId       string `json:"txId"`
+	FromGroup  int    `json:"fromGroup"`
+	ToGroup    int    `json:"toGroup"`
+}
+
+// BuildTransaction builds an unsigned transaction
+func (a *Client) BuildTransaction(publicKey string, destinations []TransactionDestination) (UnsignedTransaction, error) {
+
+	var unsignedTx UnsignedTransaction
+	var errorDetail ErrorDetail
+
+	body := BuildTransactionBodyRequest{
+		FromPublicKey: publicKey,
+		Destinations: destinations,
+	}
+
+	b, err := json.Marshal(body)
+	a.log.Debugf("Request body = %s", string(b))
+
+	_, err = a.slingClient.New().Post("transactions/build").
+		BodyJSON(body).Receive(&unsignedTx, &errorDetail)
+
+	return unsignedTx, relevantError(err, errorDetail)
+}
+
+type SubmitTransactionBodyRequest struct {
+	UnsignedTx string `json:"unsignedTx"`
+	Signature  string `json:"signature"`
+}
+
+// SubmitTransaction submit a previously built and signed transaction
+func (a *Client) SubmitTransaction(unsignedTxId string, signature string) (Transaction, error) {
+
+	var tx Transaction
+	var errorDetail ErrorDetail
+
+	params := SubmitTransactionBodyRequest{
+		UnsignedTx: unsignedTxId,
+		Signature: signature,
+	}
+	_, err := a.slingClient.New().Post("transactions/submit").
+		BodyJSON(params).Receive(&tx, &errorDetail)
+
+	return tx, relevantError(err, errorDetail)
 }
 
 type TransactionStatusRequestParams struct {
@@ -31,7 +85,7 @@ type TransactionStatusRequestParams struct {
 	ToGroup       int    `url:"toGroup"`
 }
 
-// GetTransactionStatus
+// GetTransactionStatus gets the status of a given transaction
 func (a *Client) GetTransactionStatus(transactionId string, fromGroup int, toGroup int) (TransactionStatus, error) {
 
 	var transactionStatus TransactionStatus
@@ -48,12 +102,12 @@ func (a *Client) GetTransactionStatus(transactionId string, fromGroup int, toGro
 	return transactionStatus, relevantError(err, errorDetail)
 }
 
-// WaitForTransactionConfirmed
+// WaitForTransactionConfirmed waits until the transaction is confirmed
 func (a *Client) WaitForTransactionConfirmed(ctx context.Context, transactionId string, fromGroup int, toGroup int) (bool, error) {
 	return a.WaitForTransactionStatus(ctx, TxConfirmed, transactionId, fromGroup, toGroup)
 }
 
-// WaitForTransactionStatus
+// WaitForTransactionStatus waits until the transaction is in a given status
 func (a *Client) WaitForTransactionStatus(ctx context.Context, status string, transactionId string, fromGroup int, toGroup int) (bool, error) {
 	txStatus := "unknown"
 	for {
