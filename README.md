@@ -23,15 +23,8 @@ minerWallet, err := alephiumClient.CreateWallet("", "walletPassword", true, "")
 // Get the addresses of the freshly created miner wallet
 walletAddresses, err := alephiumClient.GetWalletAddresses(minerWallet.Name)
 
-// Update miner wallet on the node (hint: you can set this in the config,
-// see https://github.com/alephium/alephium/wiki/Miner-Guide for more details)
-err = alephiumClient.UpdateMinersAddresses(walletAddresses.Addresses)
-
 // Wait until the node is sync'ed with bootstrap nodes
 alephiumClient.WaitUntilSyncedWithAtLeastOnePeer()
-
-// Start mining
-alephiumClient.StartMining()
 ```
 
 # Hack
@@ -51,5 +44,5 @@ go test .
 If you want to run your node manually,
 
 ```
-docker run -it --rm -v ${PWD}/user-dev-standalone.conf:/alephium-home/.alephium/user.conf -p 12973:12973 alephium/alephium:v0.11.0
+docker run -it --rm -v ${PWD}/user-dev-standalone.conf:/alephium-home/.alephium/user.conf -p 12973:12973 alephium/alephium:v1.1.13
 ```
