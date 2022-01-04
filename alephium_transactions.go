@@ -21,7 +21,7 @@ func (a *Client) GetUnconfirmedTransactions() error {
 }
 
 type BuildTransactionBodyRequest struct {
-	FromPublicKey string `json:"fromPublicKey"`
+	FromPublicKey string                   `json:"fromPublicKey"`
 	Destinations  []TransactionDestination `json:"destinations"`
 }
 
@@ -45,7 +45,7 @@ func (a *Client) BuildTransaction(publicKey string, destinations []TransactionDe
 
 	body := BuildTransactionBodyRequest{
 		FromPublicKey: publicKey,
-		Destinations: destinations,
+		Destinations:  destinations,
 	}
 
 	_, err := a.slingClient.New().Post("transactions/build").
@@ -67,7 +67,7 @@ func (a *Client) SubmitTransaction(unsignedTxId string, signature string) (Trans
 
 	params := SubmitTransactionBodyRequest{
 		UnsignedTx: unsignedTxId,
-		Signature: signature,
+		Signature:  signature,
 	}
 	_, err := a.slingClient.New().Post("transactions/submit").
 		BodyJSON(params).Receive(&tx, &errorDetail)

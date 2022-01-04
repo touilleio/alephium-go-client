@@ -64,11 +64,11 @@ func TestTransactionE2E(t *testing.T) {
 	unsignedTx, err := alephiumClient.BuildTransaction(walletAddressDetail.PublicKey, []TransactionDestination{
 		{
 			Address: "16FnqysnYf7qE6Xx1ZFeCixYFUwNKATTvRAArh3SD7w3S",
-			Amount: amount1,
+			Amount:  amount1,
 		},
 		{
 			Address: "1AjSsNMLZwqgN7VSisVn5ZFESXaBb25ydyR41AXTK1Xvk",
-			Amount: amount2,
+			Amount:  amount2,
 		},
 	})
 	assert.Nil(t, err)

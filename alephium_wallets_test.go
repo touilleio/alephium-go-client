@@ -22,7 +22,7 @@ var (
 
 	TestGenesisWalletName      = "GenesisWallet-01"
 	TestGenesisWalletMnemonics = "snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow"
-	TestApiKey = "MK03TBJOuLWiKb9MrUBQ8pT5MbOYlOVDfIcfkyjP1WabgOVSdQneS6do7JBeRUPS"
+	TestApiKey                 = "MK03TBJOuLWiKb9MrUBQ8pT5MbOYlOVDfIcfkyjP1WabgOVSdQneS6do7JBeRUPS"
 )
 
 func setupContainer(ctx context.Context) (testcontainers.Container, nat.Port, string, error) {
