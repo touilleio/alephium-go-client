@@ -2,7 +2,6 @@ package alephium
 
 import (
 	"context"
-	"encoding/json"
 	"time"
 )
 
@@ -49,10 +48,7 @@ func (a *Client) BuildTransaction(publicKey string, destinations []TransactionDe
 		Destinations: destinations,
 	}
 
-	b, err := json.Marshal(body)
-	a.log.Debugf("Request body = %s", string(b))
-
-	_, err = a.slingClient.New().Post("transactions/build").
+	_, err := a.slingClient.New().Post("transactions/build").
 		BodyJSON(body).Receive(&unsignedTx, &errorDetail)
 
 	return unsignedTx, relevantError(err, errorDetail)
