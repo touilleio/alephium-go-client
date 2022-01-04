@@ -17,11 +17,11 @@ import (
 )
 
 var (
-	AlephiumVersion = "1.1.10"
+	AlephiumVersion = "1.1.13"
 	AlephiumImage   = "alephium/alephium:v" + AlephiumVersion
 
 	TestGenesisWalletName      = "GenesisWallet-01"
-	TestGenesisWalletMnemonics = "convince crowd interest pen question tail curtain tenant buffalo advice mosquito position obey loyal gain local ecology tiger future turtle depend champion essence disorder"
+	TestGenesisWalletMnemonics = "snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow snow"
 	TestApiKey = "MK03TBJOuLWiKb9MrUBQ8pT5MbOYlOVDfIcfkyjP1WabgOVSdQneS6do7JBeRUPS"
 )
 
