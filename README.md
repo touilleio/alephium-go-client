@@ -1,9 +1,13 @@
 Alephium API Client for Golang
 ====
 
+> **Warning**
+> This project is no longer maintained, please use the official go-sdk from Alephium: [https://github.com/alephium/go-sdk](https://github.com/alephium/go-sdk)
+
 This project is a simple, yet expressive, API Client
 for [Alephium](https://alephium.org/) blockchain,
 written in [Golang](https://golang.org/).
+
 
 # Getting started
 
